@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Prompt Vocabulary Library</p>
         <h1>AI小说提示词词条库</h1>
-        <p class="lead">点击词条即可组合输出；支持加权符号、分类浏览、全文搜索、随机组合、自定义导入和本地收藏。</p>
+        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、随机组合、自定义导入和本地收藏。</p>
       </div>
       <div class="hero-actions">
         <label class="searchbar" aria-label="全局搜索">
@@ -58,7 +58,6 @@
         <div class="button-row">
           <button id="copyBtn" class="primary-btn" type="button">复制 COPY</button>
           <button id="clearBtn" class="danger-btn" type="button">清空 CLEAR</button>
-          <button id="weightModeBtn" class="accent-btn" type="button">切换加权符号</button>
           <button id="dedupeBtn" class="ghost-btn" type="button">去重</button>
         </div>
       </section>
@@ -139,10 +138,8 @@
 
         <section class="side-panel about-panel" data-panel="about">
           <h3>使用说明</h3>
-          <p>左侧按分类浏览词条，点击词条直接加入输出；词条上的 <b>+</b> 和 <b>-</b> 会按当前加权模式添加。</p>
+          <p>左侧按分类浏览词条，点击词条直接加入输出；词条加入上方选择区后，可在词条左侧使用 <b>+</b> / <b>-</b> 调整加权。</p>
           <p>自定义内容会保存到浏览器 LocalStorage，不会上传到服务器。若更换电脑，请使用“导出自定义JSON”。</p>
-          <h3>内置来源</h3>
-          <ul id="sourceList"></ul>
         </section>
       </aside>
     </main>

@@ -172,13 +172,15 @@ select, input, textarea {
 .group-meta { color: var(--muted); font-size: 12px; font-weight: 500; text-align: right; }
 .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px 16px; }
 .tag-item { display: inline-flex; align-items: stretch; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--surface-2); }
-.tag-text, .tag-weight { min-height: 32px; border-radius: 0; box-shadow: none !important; border: none; }
-.tag-text { color: var(--text); background: transparent; font-weight: 650; padding: 0 11px; }
-.tag-weight { width: 30px; padding: 0; color: var(--primary); background: rgba(25,118,210,.08); border-left: 1px solid var(--border); }
-.tag-text:hover, .tag-weight:hover { transform: none; }
-.selected-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(25,118,210,.25); background: rgba(25,118,210,.10); color: var(--text); border-radius: 999px; padding: 5px 8px 5px 10px; }
-.selected-chip .chip-weight { color: var(--primary); font-weight: 900; }
-.selected-chip button { min-height: 22px; width: 22px; padding: 0; border-radius: 999px; background: rgba(0,0,0,.08); color: var(--text); font-weight: 800; }
+.tag-text { min-height: 32px; border-radius: 999px; box-shadow: none !important; border: none; color: var(--text); background: transparent; font-weight: 650; padding: 0 12px; }
+.tag-text:hover { transform: none; }
+.selected-chip { display: inline-flex; align-items: center; gap: 2px; border: 1px solid rgba(25,118,210,.25); background: rgba(25,118,210,.08); color: var(--text); border-radius: 6px; padding: 3px 5px; }
+.selected-chip.is-up { border-color: rgba(25,118,210,.55); background: rgba(25,118,210,.14); }
+.selected-chip.is-down { border-color: rgba(251,140,0,.55); background: rgba(251,140,0,.12); }
+.selected-chip .chip-text { padding: 0 7px; font-weight: 650; }
+.selected-chip button { min-height: 26px; width: 26px; padding: 0; border-radius: 4px; background: transparent; color: var(--muted); font-weight: 900; box-shadow: none !important; }
+.selected-chip button:hover { transform: none; background: rgba(0,0,0,.07); color: var(--primary); }
+.selected-chip .chip-remove { color: var(--muted); }
 .empty-state { color: var(--muted); text-align: center; padding: 50px 10px; }
 
 .side-tabs { padding: 0 12px; }

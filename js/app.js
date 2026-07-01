@@ -7,9 +7,7 @@
     activeCategory: DATA.mainCategories?.[0] || '综合词条',
     weightModeIndex: 0,
     weightModes: [
-      { key: 'plain', label: '普通模式', up: t => t, down: t => t },
-      { key: 'novelai', label: 'NovelAI括号：{ } / [ ]', up: t => `{${t}}`, down: t => `[${t}]` },
-      { key: 'sd', label: 'SD权重：(tag:1.2)/(tag:0.8)', up: t => `(${t}:1.2)`, down: t => `(${t}:0.8)` },
+      { key: 'novelai', label: '加权：{ } / [ ]', up: (t, level = 1) => `${'{'.repeat(level)}${t}${'}'.repeat(level)}`, down: (t, level = 1) => `${'['.repeat(level)}${t}${']'.repeat(level)}` },
     ],
     custom: loadCustom(),
     showR18: true,
@@ -20,7 +18,7 @@
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const els = {
     categoryTabs: $('#categoryTabs'), groupsPanel: $('#groupsPanel'), selectedChips: $('#selectedChips'),
-    promptOutput: $('#promptOutput'), copyBtn: $('#copyBtn'), clearBtn: $('#clearBtn'), weightModeBtn: $('#weightModeBtn'),
+    promptOutput: $('#promptOutput'), copyBtn: $('#copyBtn'), clearBtn: $('#clearBtn'),
     weightModeLabel: $('#weightModeLabel'), dedupeBtn: $('#dedupeBtn'), separatorSelect: $('#separatorSelect'),
     globalSearch: $('#globalSearch'), panelSearch: $('#panelSearch'), searchResults: $('#searchResults'),
     statLine: $('#statLine'), limitSelect: $('#limitSelect'), expandAllBtn: $('#expandAllBtn'), showR18: $('#showR18'),
@@ -29,7 +27,7 @@
     customList: $('#customList'), exportCustomBtn: $('#exportCustomBtn'), importCustomBtn: $('#importCustomBtn'),
     importCustomFile: $('#importCustomFile'), wipeCustomBtn: $('#wipeCustomBtn'), randomCategory: $('#randomCategory'),
     randomCount: $('#randomCount'), randomReplace: $('#randomReplace'), randomBtn: $('#randomBtn'), randomPreview: $('#randomPreview'),
-    sourceList: $('#sourceList'), themeToggle: $('#themeToggle'), toast: $('#toast'), selectionHint: $('#selectionHint')
+    themeToggle: $('#themeToggle'), toast: $('#toast'), selectionHint: $('#selectionHint')
   };
 
   init();
@@ -37,7 +35,6 @@
   function init() {
     initTheme();
     renderTabs();
-    renderSources();
     renderRandomCategories();
     renderGroups();
     renderCustomList();
@@ -50,10 +47,6 @@
     els.clearBtn.addEventListener('click', () => { state.selected = []; updateOutput(); toast('已清空输出'); });
     els.dedupeBtn.addEventListener('click', dedupeSelection);
     els.separatorSelect.addEventListener('change', updateOutput);
-    els.weightModeBtn.addEventListener('click', () => {
-      state.weightModeIndex = (state.weightModeIndex + 1) % state.weightModes.length;
-      updateModeLabel(); updateOutput(); toast(`已切换为：${state.weightModes[state.weightModeIndex].label}`);
-    });
     els.globalSearch.addEventListener('input', debounce(() => {
       const q = els.globalSearch.value.trim();
       if (!q) { renderGroups(); return; }
@@ -132,7 +125,7 @@
     els.groupsPanel.innerHTML = groups.map((g, idx) => {
       const shown = g.tags.slice(0, limit);
       const more = Math.max(0, g.tags.length - shown.length);
-      const openAttr = state.expandedAll || idx < 3 ? 'open' : '';
+      const openAttr = state.expandedAll ? 'open' : '';
       return `<details class="group-card" ${openAttr}>
         <summary><span class="summary-left"><span>${escapeHtml(g.name)}</span></span><span class="group-meta">${g.tags.length}词 · ${escapeHtml(g.sourceTitle || '')}</span></summary>
         <div class="tag-grid">${shown.map(tagButton).join('')}${more ? `<span class="group-meta">还有 ${more} 个，切换“每组显示”为全部可见</span>` : ''}</div>
@@ -143,12 +136,12 @@
 
   function tagButton(t) {
     const et = escapeAttr(t);
-    return `<span class="tag-item"><button class="tag-text" data-tag="${et}" data-weight="0" title="加入：${et}" type="button">${escapeHtml(t)}</button><button class="tag-weight" data-tag="${et}" data-weight="1" title="加权加入" type="button">+</button><button class="tag-weight" data-tag="${et}" data-weight="-1" title="降权加入" type="button">−</button></span>`;
+    return `<span class="tag-item"><button class="tag-text" data-tag="${et}" title="加入：${et}" type="button">${escapeHtml(t)}</button></span>`;
   }
 
   function bindTagButtons(root) {
     $$('[data-tag]', root).forEach(btn => btn.addEventListener('click', () => {
-      addTag(btn.dataset.tag, Number(btn.dataset.weight || 0));
+      addTag(btn.dataset.tag, 0);
     }));
   }
 
@@ -161,16 +154,33 @@
     const sep = els.separatorSelect.value.replace('\\n', '\n');
     const mode = state.weightModes[state.weightModeIndex];
     els.promptOutput.value = state.selected.map(item => formatTag(item.text, item.weight, mode)).join(sep);
-    els.selectedChips.innerHTML = state.selected.map((item, idx) => `<span class="selected-chip"><span class="chip-weight">${item.weight > 0 ? '+' : item.weight < 0 ? '−' : ''}</span><span>${escapeHtml(item.text)}</span><button type="button" data-remove="${idx}" title="移除">×</button></span>`).join('');
+    els.selectedChips.innerHTML = state.selected.map((item, idx) => {
+      const weightClass = item.weight > 0 ? 'is-up' : item.weight < 0 ? 'is-down' : '';
+      const weightText = item.weight > 0 ? '已加权' : item.weight < 0 ? '已降权' : '未加权';
+      return `<span class="selected-chip ${weightClass}" title="${weightText}"><button class="chip-adjust" type="button" data-adjust="${idx}" data-delta="1" title="加权">+</button><button class="chip-adjust" type="button" data-adjust="${idx}" data-delta="-1" title="降权">−</button><span class="chip-text">${escapeHtml(item.text)}</span><button class="chip-remove" type="button" data-remove="${idx}" title="移除">🗑</button></span>`;
+    }).join('');
+    $$('[data-adjust]', els.selectedChips).forEach(btn => btn.addEventListener('click', () => {
+      adjustWeight(Number(btn.dataset.adjust), Number(btn.dataset.delta));
+    }));
     $$('[data-remove]', els.selectedChips).forEach(btn => btn.addEventListener('click', () => {
       state.selected.splice(Number(btn.dataset.remove), 1); updateOutput();
     }));
     els.selectionHint.textContent = state.selected.length ? `已选择 ${state.selected.length} 个词条。` : '点击下方词条后会加入这里。';
   }
 
+  function adjustWeight(index, delta) {
+    const item = state.selected[index];
+    if (!item) return;
+    // 再次点击相同方向会回到未加权；点击相反方向会切换方向。
+    if (delta > 0) item.weight = item.weight > 0 ? 0 : 1;
+    if (delta < 0) item.weight = item.weight < 0 ? 0 : -1;
+    updateOutput();
+  }
+
   function formatTag(text, weight, mode) {
-    if (weight > 0) return mode.up(text);
-    if (weight < 0) return mode.down(text);
+    const level = Math.max(1, Math.abs(Number(weight) || 0));
+    if (weight > 0) return mode.up(text, level);
+    if (weight < 0) return mode.down(text, level);
     return text;
   }
 
@@ -300,13 +310,6 @@
     toast(`已随机生成 ${picked.length} 个词条`);
   }
 
-  function renderSources() {
-    els.sourceList.innerHTML = (DATA.sources || []).map(src => {
-      const title = escapeHtml(src.title);
-      const link = src.url ? `<a href="${escapeAttr(src.url)}" target="_blank" rel="noreferrer">原文链接</a>` : '无链接';
-      return `<li><b>${title}</b> · ${src.groupCount || 0} 组 · ${link}</li>`;
-    }).join('');
-  }
 
   function initTheme() {
     const saved = localStorage.getItem(themeKey);
