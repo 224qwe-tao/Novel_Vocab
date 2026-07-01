@@ -1,7 +1,9 @@
 (() => {
   const DATA = window.__VOCAB_DATA__ || { groups: [], mainCategories: [], stats: {} };
-  const groupStoreKey = 'aiNovelVocabSite.groups.v3';
-  const categoryStoreKey = 'aiNovelVocabSite.categories.v1';
+  const groupStoreKey = 'aiNovelVocabSite.groups.v10';
+  const categoryStoreKey = 'aiNovelVocabSite.categories.v10';
+  const oldGroupStoreKeys = ['aiNovelVocabSite.groups.v3'];
+  const oldCategoryStoreKeys = ['aiNovelVocabSite.categories.v1'];
   const legacyCustomV2 = 'aiNovelVocabSite.custom.v2';
   const legacyCustomV1 = 'aiNovelVocabSite.custom.v1';
   const themeKey = 'aiNovelVocabSite.theme.v1';
@@ -478,11 +480,12 @@
   }
 
   function loadGroups() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(groupStoreKey) || 'null');
-      if (Array.isArray(saved) && saved.length) return normalizeGroups(saved);
-    } catch {}
-    const groups = normalizeGroups(DATA.groups || []);
+    const baseGroups = normalizeGroups(DATA.groups || []);
+    const saved = readStoredArray(groupStoreKey) || oldGroupStoreKeys.map(readStoredArray).find(Array.isArray);
+    if (Array.isArray(saved) && saved.length) {
+      return mergeDefaultAndSavedGroups(baseGroups, normalizeGroups(saved));
+    }
+    const groups = [...baseGroups];
     const legacy = loadLegacyCustom();
     Object.entries(legacy).forEach(([name, tags]) => {
       groups.push({ id: makeBaseId(`custom-${name}`, groups.length), name, mainCategory: '自定义', tags });
@@ -491,15 +494,29 @@
   }
 
   function loadCategories(groups) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(categoryStoreKey) || 'null');
-      if (Array.isArray(saved) && saved.length) return uniqueClean(saved);
-    } catch {}
+    const saved = readStoredArray(categoryStoreKey) || oldCategoryStoreKeys.map(readStoredArray).find(Array.isArray) || [];
     return uniqueClean([
       ...(DATA.mainCategories || []),
+      ...saved,
       ...groups.map(g => g.mainCategory || '综合词条'),
       '自定义'
     ]);
+  }
+
+  function readStoredArray(key) {
+    try {
+      const data = JSON.parse(localStorage.getItem(key) || 'null');
+      return Array.isArray(data) ? data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function mergeDefaultAndSavedGroups(defaultGroups, savedGroups) {
+    const byId = new Map();
+    defaultGroups.forEach(g => byId.set(g.id, g));
+    savedGroups.forEach(g => byId.set(g.id, g));
+    return ensureUniqueIds(Array.from(byId.values()));
   }
 
   function normalizeGroups(rawGroups) {
