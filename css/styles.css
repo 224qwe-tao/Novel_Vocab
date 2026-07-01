@@ -174,12 +174,10 @@ select, input, textarea {
 .tag-item { display: inline-flex; align-items: stretch; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--surface-2); }
 .tag-text { min-height: 32px; border-radius: 999px; box-shadow: none !important; border: none; color: var(--text); background: transparent; font-weight: 650; padding: 0 12px; }
 .tag-text:hover { transform: none; }
-.selected-chip { display: inline-flex; align-items: center; gap: 2px; border: 1px solid rgba(25,118,210,.25); background: rgba(25,118,210,.08); color: var(--text); border-radius: 6px; padding: 3px 5px; }
-.selected-chip.is-up { border-color: rgba(25,118,210,.55); background: rgba(25,118,210,.14); }
-.selected-chip.is-down { border-color: rgba(251,140,0,.55); background: rgba(251,140,0,.12); }
-.selected-chip .chip-text { padding: 0 7px; font-weight: 650; }
-.selected-chip button { min-height: 26px; width: 26px; padding: 0; border-radius: 4px; background: transparent; color: var(--muted); font-weight: 900; box-shadow: none !important; }
-.selected-chip button:hover { transform: none; background: rgba(0,0,0,.07); color: var(--primary); }
+.selected-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(25,118,210,.25); background: rgba(25,118,210,.08); color: var(--text); border-radius: 6px; padding: 4px 6px 4px 10px; }
+.selected-chip .chip-text { font-weight: 650; }
+.selected-chip button { min-height: 24px; width: 24px; padding: 0; border-radius: 4px; background: transparent; color: var(--muted); font-weight: 900; box-shadow: none !important; }
+.selected-chip button:hover { transform: none; background: rgba(0,0,0,.07); color: var(--danger); }
 .selected-chip .chip-remove { color: var(--muted); }
 .empty-state { color: var(--muted); text-align: center; padding: 50px 10px; }
 
@@ -196,12 +194,26 @@ hr { width: 100%; border: none; border-top: 1px solid var(--border); margin: 4px
 .result-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); padding: 12px; }
 .result-title { font-weight: 800; margin-bottom: 8px; color: var(--primary); }
 .result-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-.custom-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--surface-2); }
-.custom-row span { word-break: break-all; }
 .custom-row button { min-height: 28px; padding: 0 10px; font-size: 12px; }
 .about-panel p { color: var(--muted); line-height: 1.75; }
 .about-panel ul { padding-left: 18px; color: var(--muted); line-height: 1.8; }
 .about-panel a { color: var(--primary); }
+
+.edit-block { display: grid; gap: 10px; }
+.edit-block h3, .search-about-grid h3 { margin: 0; font-size: 16px; color: var(--text); }
+.output-head-reset { border-bottom: none; padding: 0 0 10px; }
+.search-about-grid { display: grid; gap: 18px; }
+.merged-about { border-top: 1px solid var(--border); padding-top: 16px; }
+.more-note { align-self: center; padding: 7px 0; }
+.custom-group-editor { display: block; }
+.custom-group-editor summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 800; color: var(--primary); }
+.custom-group-editor summary::-webkit-details-marker { display: none; }
+.rename-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin: 10px 0 12px; }
+.editable-tags { display: grid; gap: 8px; }
+.custom-row { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 8px; background: var(--surface-2); }
+.tag-edit-input { min-width: 0; width: 100%; }
+.empty-state.slim { padding: 18px 8px; }
+
 .toast { position: fixed; right: 22px; bottom: 22px; transform: translateY(20px); opacity: 0; pointer-events: none; background: #111827; color: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: var(--shadow); transition: .2s ease; z-index: 20; }
 .toast.show { transform: translateY(0); opacity: 1; }
 
@@ -212,6 +224,7 @@ hr { width: 100%; border: none; border-top: 1px solid var(--border); margin: 4px
   .searchbar input { width: min(520px, 70vw); }
 }
 @media (max-width: 680px) {
+  .rename-row, .custom-row { grid-template-columns: 1fr; }
   .app-shell { width: min(100vw - 16px, 100%); }
   .button-row { justify-content: stretch; }
   .button-row button { flex: 1 1 auto; }

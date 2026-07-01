@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=4" />
+  <link rel="stylesheet" href="css/styles.css?v=6" />
 </head>
 <body>
   <div class="app-shell">
@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Prompt Vocabulary Library</p>
         <h1>AI小说提示词词条库</h1>
-        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、自定义导入和本地收藏。</p>
+        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、自定义词条组、导入和本地收藏。</p>
       </div>
       <div class="hero-actions">
         <label class="searchbar" aria-label="全局搜索">
@@ -46,7 +46,7 @@
       </section>
 
       <section class="card output-card" aria-label="输出区">
-        <div class="card-head compact-head">
+        <div class="card-head compact-head output-head-reset">
           <div>
             <h2>输出</h2>
             <p>用于 AI 小说、角色设定或情节描写的词条组合。</p>
@@ -80,55 +80,67 @@
       <aside class="card side-card">
         <nav class="tabs side-tabs" aria-label="工具面板">
           <button class="tab active" data-side="custom" type="button">自定义</button>
-          <button class="tab" data-side="search" type="button">TAG搜索</button>
-          <button class="tab" data-side="about" type="button">关于</button>
+          <button class="tab" data-side="search-about" type="button">TAG搜索 / 关于</button>
         </nav>
 
         <section class="side-panel active" data-panel="custom">
           <div class="form-grid">
-            <label>自定义分类名称
-              <input id="customCategory" value="我的词条" />
+            <div class="edit-block">
+              <h3>词条组编辑</h3>
+              <label>新增词条组名称
+                <input id="newGroupName" value="我的词条" placeholder="输入新的词条组名称" />
+              </label>
+              <button id="createGroupBtn" class="primary-btn" type="button">新增词条组</button>
+            </div>
+
+            <label>选择要加入的词条组
+              <select id="targetGroupSelect"></select>
             </label>
+
             <label>批量导入词条
               <textarea id="customInput" placeholder="在此输入你的词条，支持中文逗号、英文逗号、空格或换行分隔"></textarea>
             </label>
             <div class="button-row left">
-              <button id="loadCustomBtn" class="primary-btn" type="button">加载</button>
+              <button id="loadCustomBtn" class="primary-btn" type="button">加载到所选词条组</button>
               <button id="clearCustomInputBtn" class="ghost-btn" type="button">清空输入</button>
             </div>
+
             <hr />
             <label>单个新增词条
               <input id="singleTagInput" placeholder="输入一个新词条" />
             </label>
-            <button id="addSingleTagBtn" class="accent-btn" type="button">添加词条</button>
+            <button id="addSingleTagBtn" class="accent-btn" type="button">添加到所选词条组</button>
+
             <div class="button-row left wrap">
-              <button id="exportCustomBtn" class="ghost-btn" type="button">导出自定义JSON</button>
               <button id="importCustomBtn" class="ghost-btn" type="button">导入JSON</button>
               <input id="importCustomFile" type="file" accept="application/json,.json" hidden />
-              <button id="wipeCustomBtn" class="danger-outline-btn" type="button">删除本地自定义</button>
             </div>
           </div>
           <div id="customList" class="custom-list"></div>
         </section>
 
-        <section class="side-panel" data-panel="search">
-          <label class="panel-search">搜索词条
-            <input id="panelSearch" type="search" placeholder="例如：气质 / 声音 / 拘束..." />
-          </label>
-          <div id="searchResults" class="result-list"></div>
-        </section>
-
-        <section class="side-panel about-panel" data-panel="about">
-          <h3>使用说明</h3>
-          <p>左侧按分类浏览词条，点击词条直接加入输出；词条加入上方选择区后，可在词条左侧使用 <b>+</b> / <b>-</b> 调整加权。</p>
-          <p>自定义内容会保存到浏览器 LocalStorage，不会上传到服务器。若更换电脑，请使用“导出自定义JSON”。</p>
+        <section class="side-panel" data-panel="search-about">
+          <div class="search-about-grid">
+            <div>
+              <h3>TAG搜索</h3>
+              <label class="panel-search">搜索词条
+                <input id="panelSearch" type="search" placeholder="例如：气质 / 声音 / 拘束..." />
+              </label>
+              <div id="searchResults" class="result-list"></div>
+            </div>
+            <div class="about-panel merged-about">
+              <h3>关于</h3>
+              <p>这是一个面向 AI 小说写作的静态词条收藏网站。点击左侧词条后，会直接加入上方选择区与右侧输出框。</p>
+              <p>自定义词条组会保存到当前浏览器 LocalStorage，不会上传到服务器。上传到 GitHub Pages 后仍可正常使用。</p>
+            </div>
+          </div>
         </section>
       </aside>
     </main>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="data/vocab.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>

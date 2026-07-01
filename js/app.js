@@ -1,14 +1,11 @@
 (() => {
   const DATA = window.__VOCAB_DATA__ || { groups: [], mainCategories: [], sources: [], stats: {} };
-  const storeKey = 'aiNovelVocabSite.custom.v1';
+  const storeKey = 'aiNovelVocabSite.custom.v2';
+  const legacyStoreKey = 'aiNovelVocabSite.custom.v1';
   const themeKey = 'aiNovelVocabSite.theme.v1';
   const state = {
     selected: [],
     activeCategory: DATA.mainCategories?.[0] || '综合词条',
-    weightMode: {
-      up: (t, level = 1) => `${'{'.repeat(level)}${t}${'}'.repeat(level)}`,
-      down: (t, level = 1) => `${'['.repeat(level)}${t}${']'.repeat(level)}`
-    },
     custom: loadCustom(),
     expandedAll: false,
   };
@@ -16,65 +13,82 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const els = {
-    categoryTabs: $('#categoryTabs'), groupsPanel: $('#groupsPanel'), selectedChips: $('#selectedChips'),
-    promptOutput: $('#promptOutput'), copyBtn: $('#copyBtn'), clearBtn: $('#clearBtn'),
+    categoryTabs: $('#categoryTabs'),
+    groupsPanel: $('#groupsPanel'),
+    selectedChips: $('#selectedChips'),
+    promptOutput: $('#promptOutput'),
+    copyBtn: $('#copyBtn'),
+    clearBtn: $('#clearBtn'),
     separatorSelect: $('#separatorSelect'),
-    globalSearch: $('#globalSearch'), panelSearch: $('#panelSearch'), searchResults: $('#searchResults'),
-    statLine: $('#statLine'), limitSelect: $('#limitSelect'), expandAllBtn: $('#expandAllBtn'),
-    customCategory: $('#customCategory'), customInput: $('#customInput'), loadCustomBtn: $('#loadCustomBtn'),
-    clearCustomInputBtn: $('#clearCustomInputBtn'), singleTagInput: $('#singleTagInput'), addSingleTagBtn: $('#addSingleTagBtn'),
-    customList: $('#customList'), exportCustomBtn: $('#exportCustomBtn'), importCustomBtn: $('#importCustomBtn'),
-    importCustomFile: $('#importCustomFile'), wipeCustomBtn: $('#wipeCustomBtn'),
-    themeToggle: $('#themeToggle'), toast: $('#toast'), selectionHint: $('#selectionHint')
+    globalSearch: $('#globalSearch'),
+    panelSearch: $('#panelSearch'),
+    searchResults: $('#searchResults'),
+    statLine: $('#statLine'),
+    limitSelect: $('#limitSelect'),
+    expandAllBtn: $('#expandAllBtn'),
+    newGroupName: $('#newGroupName'),
+    createGroupBtn: $('#createGroupBtn'),
+    targetGroupSelect: $('#targetGroupSelect'),
+    customInput: $('#customInput'),
+    loadCustomBtn: $('#loadCustomBtn'),
+    clearCustomInputBtn: $('#clearCustomInputBtn'),
+    singleTagInput: $('#singleTagInput'),
+    addSingleTagBtn: $('#addSingleTagBtn'),
+    customList: $('#customList'),
+    importCustomBtn: $('#importCustomBtn'),
+    importCustomFile: $('#importCustomFile'),
+    themeToggle: $('#themeToggle'),
+    toast: $('#toast'),
+    selectionHint: $('#selectionHint')
   };
 
   init();
 
   function init() {
-    removeDeprecatedUi();
     initTheme();
+    ensureInitialCustomGroup();
     renderTabs();
     renderGroups();
-    renderCustomList();
+    renderCustomTools();
     bindEvents();
     updateOutput();
   }
 
-
-  function removeDeprecatedUi() {
-    const bannedTexts = ['切换加权符号', '切換加權符號', '去重', '显示R18', '顯示R18', '随机组合', '隨機組合', '内置来源', '內置來源', 'D站TAG导入', 'D站TAG導入'];
-    $$('button, label, .tab, .toggle-pill').forEach(el => {
-      const txt = (el.textContent || '').replace(/\s+/g, '');
-      if (bannedTexts.some(t => txt.includes(t.replace(/\s+/g, '')))) el.remove();
-    });
-  }
-
   function bindEvents() {
     els.copyBtn.addEventListener('click', copyOutput);
-    els.clearBtn.addEventListener('click', () => { state.selected = []; updateOutput(); toast('已清空输出'); });
+    els.clearBtn.addEventListener('click', () => {
+      state.selected = [];
+      updateOutput();
+      toast('已清空输出');
+    });
     els.separatorSelect.addEventListener('change', updateOutput);
     els.globalSearch.addEventListener('input', debounce(() => {
       const q = els.globalSearch.value.trim();
-      if (!q) { renderGroups(); return; }
+      if (!q) {
+        renderGroups();
+        return;
+      }
       state.activeCategory = '搜索结果';
       renderTabs();
       renderGroups(q);
     }, 120));
     els.panelSearch.addEventListener('input', debounce(() => renderPanelSearch(els.panelSearch.value.trim()), 120));
     els.limitSelect.addEventListener('change', renderGroups);
-    els.expandAllBtn.addEventListener('click', () => { state.expandedAll = !state.expandedAll; renderGroups(); });
+    els.expandAllBtn.addEventListener('click', () => {
+      state.expandedAll = !state.expandedAll;
+      renderGroups();
+    });
+    els.createGroupBtn.addEventListener('click', createCustomGroup);
     els.loadCustomBtn.addEventListener('click', importCustomText);
     els.clearCustomInputBtn.addEventListener('click', () => { els.customInput.value = ''; });
     els.addSingleTagBtn.addEventListener('click', () => {
       const tag = els.singleTagInput.value.trim();
       if (!tag) return toast('请输入词条');
-      addCustomTags(els.customCategory.value.trim() || '我的词条', [tag]);
+      addCustomTags(getTargetGroupName(), [tag]);
       els.singleTagInput.value = '';
     });
-    els.exportCustomBtn.addEventListener('click', exportCustom);
     els.importCustomBtn.addEventListener('click', () => els.importCustomFile.click());
     els.importCustomFile.addEventListener('change', importCustomJson);
-    els.wipeCustomBtn.addEventListener('click', wipeCustom);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
       $$('.side-tabs .tab').forEach(b => b.classList.remove('active'));
@@ -88,7 +102,13 @@
     const base = DATA.groups || [];
     if (!includeCustom) return base;
     const customGroups = Object.entries(state.custom).map(([name, tags], i) => ({
-      id: `custom-${i}`, name, mainCategory: '自定义', sourceTitle: '浏览器自定义', sourceUrl: '', r18: false, tags
+      id: `custom-${i}`,
+      name,
+      mainCategory: '自定义',
+      sourceTitle: '本地自定义',
+      sourceUrl: '',
+      r18: false,
+      tags
     }));
     return base.concat(customGroups);
   }
@@ -104,7 +124,8 @@
     $$('.tab', els.categoryTabs).forEach(btn => btn.addEventListener('click', () => {
       state.activeCategory = btn.dataset.cat;
       els.globalSearch.value = '';
-      renderTabs(); renderGroups();
+      renderTabs();
+      renderGroups();
     }));
   }
 
@@ -112,26 +133,31 @@
     const q = (searchTerm || '').toLowerCase();
     const limit = Number(els.limitSelect.value || 80);
     let groups = visibleGroups();
+
     if (q) {
-      groups = groups.map(g => ({ ...g, tags: g.tags.filter(t => matches(t, q) || matches(g.name, q) || matches(g.sourceTitle, q)) }))
+      groups = groups
+        .map(g => ({ ...g, tags: g.tags.filter(t => matches(t, q) || matches(g.name, q) || matches(g.sourceTitle, q)) }))
         .filter(g => g.tags.length || matches(g.name, q) || matches(g.sourceTitle, q));
     } else if (state.activeCategory !== '搜索结果') {
       groups = groups.filter(g => g.mainCategory === state.activeCategory);
     }
+
     const totalTags = groups.reduce((sum, g) => sum + g.tags.length, 0);
     els.statLine.textContent = `${groups.length} 个词条组 · ${totalTags} 个可见词条`;
     els.expandAllBtn.textContent = state.expandedAll ? '全部折叠' : '全部展开';
+
     if (!groups.length) {
       els.groupsPanel.innerHTML = `<div class="empty-state">没有找到匹配的词条。</div>`;
       return;
     }
-    els.groupsPanel.innerHTML = groups.map((g, idx) => {
+
+    els.groupsPanel.innerHTML = groups.map(g => {
       const shown = g.tags.slice(0, limit);
       const more = Math.max(0, g.tags.length - shown.length);
       const openAttr = state.expandedAll ? 'open' : '';
       return `<details class="group-card" ${openAttr}>
         <summary><span class="summary-left"><span>${escapeHtml(g.name)}</span></span><span class="group-meta">${g.tags.length}词 · ${escapeHtml(g.sourceTitle || '')}</span></summary>
-        <div class="tag-grid">${shown.map(tagButton).join('')}${more ? `<span class="group-meta">还有 ${more} 个，切换“每组显示”为全部可见</span>` : ''}</div>
+        <div class="tag-grid">${shown.map(tagButton).join('')}${more ? `<span class="group-meta more-note">还有 ${more} 个，切换“每组显示”为全部可见</span>` : ''}</div>
       </details>`;
     }).join('');
     bindTagButtons(els.groupsPanel);
@@ -143,50 +169,26 @@
   }
 
   function bindTagButtons(root) {
-    $$('[data-tag]', root).forEach(btn => btn.addEventListener('click', () => {
-      addTag(btn.dataset.tag, 0);
-    }));
+    $$('[data-tag]', root).forEach(btn => btn.addEventListener('click', () => addTag(btn.dataset.tag)));
   }
 
-  function addTag(text, weight = 0) {
-    state.selected.push({ text, weight });
+  function addTag(text) {
+    state.selected.push(text);
     updateOutput();
   }
 
   function updateOutput() {
     const sep = els.separatorSelect.value.replace('\\n', '\n');
-    const mode = state.weightMode;
-    els.promptOutput.value = state.selected.map(item => formatTag(item.text, item.weight, mode)).join(sep);
-    els.selectedChips.innerHTML = state.selected.map((item, idx) => {
-      const weightClass = item.weight > 0 ? 'is-up' : item.weight < 0 ? 'is-down' : '';
-      const weightText = item.weight > 0 ? '已加权' : item.weight < 0 ? '已降权' : '未加权';
-      return `<span class="selected-chip ${weightClass}" title="${weightText}"><button class="chip-adjust" type="button" data-adjust="${idx}" data-delta="1" title="加权">+</button><button class="chip-adjust" type="button" data-adjust="${idx}" data-delta="-1" title="降权">−</button><span class="chip-text">${escapeHtml(item.text)}</span><button class="chip-remove" type="button" data-remove="${idx}" title="移除">🗑</button></span>`;
-    }).join('');
-    $$('[data-adjust]', els.selectedChips).forEach(btn => btn.addEventListener('click', () => {
-      adjustWeight(Number(btn.dataset.adjust), Number(btn.dataset.delta));
-    }));
+    els.promptOutput.value = state.selected.join(sep);
+    els.selectedChips.innerHTML = state.selected.map((text, idx) => (
+      `<span class="selected-chip"><span class="chip-text">${escapeHtml(text)}</span><button class="chip-remove" type="button" data-remove="${idx}" title="移除">×</button></span>`
+    )).join('');
     $$('[data-remove]', els.selectedChips).forEach(btn => btn.addEventListener('click', () => {
-      state.selected.splice(Number(btn.dataset.remove), 1); updateOutput();
+      state.selected.splice(Number(btn.dataset.remove), 1);
+      updateOutput();
     }));
     els.selectionHint.textContent = state.selected.length ? `已选择 ${state.selected.length} 个词条。` : '点击下方词条后会加入这里。';
   }
-
-  function adjustWeight(index, delta) {
-    const item = state.selected[index];
-    if (!item) return;
-    // 再次点击相同方向会回到未加权；点击相反方向会切换方向。
-    if (delta > 0) item.weight = item.weight > 0 ? 0 : 1;
-    if (delta < 0) item.weight = item.weight < 0 ? 0 : -1;
-    updateOutput();
-  }
-
-  function formatTag(text, weight, mode) {
-    const level = Math.max(1, Math.abs(Number(weight) || 0));
-    if (weight > 0) return mode.up(text, level);
-    if (weight < 0) return mode.down(text, level);
-    return text;
-  }
-
 
   async function copyOutput() {
     const val = els.promptOutput.value.trim();
@@ -202,55 +204,191 @@
   }
 
   function syncSelectedFromManualOutput() {
-    // Manual editing is allowed; it does not overwrite chips to avoid accidental parsing errors.
     els.selectionHint.textContent = '输出框已手动编辑；继续点击词条会追加到选择区。';
+  }
+
+  function ensureInitialCustomGroup() {
+    if (!Object.keys(state.custom).length) {
+      state.custom = { '我的词条': [] };
+      saveCustom();
+    }
+  }
+
+  function getTargetGroupName() {
+    const selected = els.targetGroupSelect.value;
+    if (selected) return selected;
+    const fallback = els.newGroupName.value.trim() || '我的词条';
+    if (!state.custom[fallback]) state.custom[fallback] = [];
+    saveCustom();
+    renderCustomTools(fallback);
+    return fallback;
+  }
+
+  function createCustomGroup() {
+    const name = els.newGroupName.value.trim();
+    if (!name) return toast('请输入词条组名称');
+    if (state.custom[name]) return toast('该词条组已存在');
+    state.custom[name] = [];
+    saveCustom();
+    renderTabs();
+    renderGroups();
+    renderCustomTools(name);
+    toast('已新增词条组');
   }
 
   function importCustomText() {
     const text = els.customInput.value.trim();
     if (!text) return toast('请输入要导入的词条');
     const tags = splitInput(text);
-    addCustomTags(els.customCategory.value.trim() || '我的词条', tags);
+    addCustomTags(getTargetGroupName(), tags);
   }
 
   function splitInput(text) {
     return [...new Set(text.split(/[，,;；\n\t ]+/).map(s => s.trim()).filter(Boolean))];
   }
 
-  function addCustomTags(category, tags) {
-    if (!state.custom[category]) state.custom[category] = [];
-    const merged = new Set(state.custom[category]);
+  function addCustomTags(groupName, tags) {
+    const name = groupName || '我的词条';
+    if (!state.custom[name]) state.custom[name] = [];
+    const merged = new Set(state.custom[name]);
     tags.forEach(t => merged.add(t));
-    state.custom[category] = [...merged];
-    saveCustom(); renderCustomList(); renderTabs(); renderGroups();
-    toast(`已添加 ${tags.length} 个自定义词条`);
+    state.custom[name] = [...merged];
+    saveCustom();
+    renderTabs();
+    renderGroups();
+    renderCustomTools(name);
+    toast(`已添加 ${tags.length} 个词条到「${name}」`);
+  }
+
+  function renderCustomTools(selectedName = els.targetGroupSelect?.value) {
+    renderTargetGroupSelect(selectedName);
+    renderCustomList();
+  }
+
+  function renderTargetGroupSelect(selectedName = '') {
+    const names = Object.keys(state.custom);
+    els.targetGroupSelect.innerHTML = names.map(name => `<option value="${escapeAttr(name)}">${escapeHtml(name)}</option>`).join('');
+    if (selectedName && state.custom[selectedName]) els.targetGroupSelect.value = selectedName;
   }
 
   function renderCustomList() {
     const entries = Object.entries(state.custom);
     if (!entries.length) {
-      els.customList.innerHTML = '<div class="empty-state">暂无自定义词条。</div>';
+      els.customList.innerHTML = '<div class="empty-state">暂无自定义词条组。</div>';
       return;
     }
-    els.customList.innerHTML = entries.map(([cat, tags]) => `<div class="result-card"><div class="result-title">${escapeHtml(cat)} · ${tags.length}</div><div class="result-tags">${tags.map(t => `<span class="custom-row"><span>${escapeHtml(t)}</span><button class="danger-outline-btn" data-del-cat="${escapeAttr(cat)}" data-del-tag="${escapeAttr(t)}" type="button">删除</button></span>`).join('')}</div></div>`).join('');
+
+    els.customList.innerHTML = entries.map(([cat, tags]) => `
+      <details class="result-card custom-group-editor" open>
+        <summary>
+          <span>${escapeHtml(cat)} · ${tags.length}</span>
+        </summary>
+        <div class="rename-row">
+          <input value="${escapeAttr(cat)}" data-rename-input="${escapeAttr(cat)}" aria-label="修改词条组名称" />
+          <button class="ghost-btn small" data-rename-group="${escapeAttr(cat)}" type="button">保存名称</button>
+          <button class="danger-outline-btn small" data-delete-group="${escapeAttr(cat)}" type="button">删除词条组</button>
+        </div>
+        <div class="result-tags editable-tags">
+          ${tags.length ? tags.map(t => editableTagRow(cat, t)).join('') : '<div class="empty-state slim">这个词条组暂时没有词条。</div>'}
+        </div>
+      </details>
+    `).join('');
+
+    $$('[data-rename-group]', els.customList).forEach(btn => btn.addEventListener('click', () => {
+      const oldName = btn.dataset.renameGroup;
+      const input = $(`[data-rename-input="${cssEscape(oldName)}"]`, els.customList);
+      renameCustomGroup(oldName, input?.value.trim() || '');
+    }));
+
+    $$('[data-delete-group]', els.customList).forEach(btn => btn.addEventListener('click', () => {
+      const name = btn.dataset.deleteGroup;
+      if (!confirm(`确定删除词条组「${name}」？`)) return;
+      delete state.custom[name];
+      if (!Object.keys(state.custom).length) state.custom = { '我的词条': [] };
+      saveCustom();
+      renderTabs();
+      renderGroups();
+      renderCustomTools();
+    }));
+
+    $$('[data-save-tag]', els.customList).forEach(btn => btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      const oldTag = btn.dataset.oldTag;
+      const input = $(`[data-edit-tag="${cssEscape(cat)}::${cssEscape(oldTag)}"]`, els.customList);
+      updateCustomTag(cat, oldTag, input?.value.trim() || '');
+    }));
+
     $$('[data-del-tag]', els.customList).forEach(btn => btn.addEventListener('click', () => {
-      const cat = btn.dataset.delCat, tag = btn.dataset.delTag;
+      const cat = btn.dataset.cat;
+      const tag = btn.dataset.delTag;
       state.custom[cat] = (state.custom[cat] || []).filter(t => t !== tag);
-      if (!state.custom[cat].length) delete state.custom[cat];
-      saveCustom(); renderCustomList(); renderGroups();
+      saveCustom();
+      renderGroups();
+      renderCustomTools(cat);
     }));
   }
 
-  function loadCustom() {
-    try { return JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch { return {}; }
+  function editableTagRow(cat, tag) {
+    const key = `${cat}::${tag}`;
+    return `<span class="custom-row">
+      <input class="tag-edit-input" value="${escapeAttr(tag)}" data-edit-tag="${escapeAttr(key)}" aria-label="编辑词条" />
+      <button class="ghost-btn small" data-save-tag="1" data-cat="${escapeAttr(cat)}" data-old-tag="${escapeAttr(tag)}" type="button">保存</button>
+      <button class="danger-outline-btn small" data-del-tag="${escapeAttr(tag)}" data-cat="${escapeAttr(cat)}" type="button">删除</button>
+    </span>`;
   }
-  function saveCustom() { localStorage.setItem(storeKey, JSON.stringify(state.custom)); }
 
-  function exportCustom() {
-    const blob = new Blob([JSON.stringify(state.custom, null, 2)], { type: 'application/json;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'ai-novel-custom-vocab.json'; a.click();
-    URL.revokeObjectURL(a.href);
+  function renameCustomGroup(oldName, newName) {
+    if (!newName) return toast('请输入新的词条组名称');
+    if (oldName === newName) return toast('词条组名称未改变');
+    const oldTags = state.custom[oldName] || [];
+    const next = {};
+    Object.entries(state.custom).forEach(([name, tags]) => {
+      if (name === oldName) return;
+      next[name] = tags;
+    });
+    next[newName] = [...new Set([...(next[newName] || []), ...oldTags])];
+    state.custom = next;
+    saveCustom();
+    renderTabs();
+    renderGroups();
+    renderCustomTools(newName);
+    toast('已修改词条组名称');
+  }
+
+  function updateCustomTag(cat, oldTag, newTag) {
+    if (!newTag) return toast('词条不能为空');
+    const tags = state.custom[cat] || [];
+    const updated = tags.map(t => t === oldTag ? newTag : t);
+    state.custom[cat] = [...new Set(updated)];
+    saveCustom();
+    renderGroups();
+    renderCustomTools(cat);
+    toast('已更新词条');
+  }
+
+  function loadCustom() {
+    try {
+      const current = JSON.parse(localStorage.getItem(storeKey) || 'null');
+      if (current && typeof current === 'object' && !Array.isArray(current)) return normalizeCustom(current);
+      const legacy = JSON.parse(localStorage.getItem(legacyStoreKey) || 'null');
+      if (legacy && typeof legacy === 'object' && !Array.isArray(legacy)) return normalizeCustom(legacy);
+      return {};
+    } catch {
+      return {};
+    }
+  }
+
+  function normalizeCustom(data) {
+    const clean = {};
+    Object.entries(data || {}).forEach(([cat, tags]) => {
+      if (!cat || !Array.isArray(tags)) return;
+      clean[cat] = [...new Set(tags.map(t => String(t).trim()).filter(Boolean))];
+    });
+    return clean;
+  }
+
+  function saveCustom() {
+    localStorage.setItem(storeKey, JSON.stringify(state.custom));
   }
 
   function importCustomJson(e) {
@@ -259,24 +397,29 @@
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const data = JSON.parse(reader.result);
-        Object.entries(data).forEach(([cat, tags]) => Array.isArray(tags) && addCustomTags(cat, tags));
-      } catch (err) { toast('JSON格式不正确'); }
+        const data = normalizeCustom(JSON.parse(reader.result));
+        Object.entries(data).forEach(([cat, tags]) => addCustomTags(cat, tags));
+      } catch (err) {
+        toast('JSON格式不正确');
+      }
       e.target.value = '';
     };
     reader.readAsText(file, 'utf-8');
   }
 
-  function wipeCustom() {
-    if (!confirm('确定删除本浏览器保存的所有自定义词条？')) return;
-    state.custom = {}; saveCustom(); renderCustomList(); renderTabs(); renderGroups(); toast('已删除自定义词条');
-  }
-
   function renderPanelSearch(q) {
-    if (!q) { els.searchResults.innerHTML = '<div class="empty-state">输入关键词后显示结果。</div>'; return; }
+    if (!q) {
+      els.searchResults.innerHTML = '<div class="empty-state">输入关键词后显示结果。</div>';
+      return;
+    }
     const lq = q.toLowerCase();
-    const results = visibleGroups().map(g => ({ ...g, tags: g.tags.filter(t => matches(t, lq)).slice(0, 80) })).filter(g => g.tags.length);
-    if (!results.length) { els.searchResults.innerHTML = '<div class="empty-state">没有搜索结果。</div>'; return; }
+    const results = visibleGroups()
+      .map(g => ({ ...g, tags: g.tags.filter(t => matches(t, lq)).slice(0, 80) }))
+      .filter(g => g.tags.length);
+    if (!results.length) {
+      els.searchResults.innerHTML = '<div class="empty-state">没有搜索结果。</div>';
+      return;
+    }
     els.searchResults.innerHTML = results.slice(0, 20).map(g => `<div class="result-card"><div class="result-title">${escapeHtml(g.name)} · ${g.tags.length}</div><div class="result-tags">${g.tags.map(tagButton).join('')}</div></div>`).join('');
     bindTagButtons(els.searchResults);
   }
@@ -286,6 +429,7 @@
     if (saved === 'dark') document.body.classList.add('dark');
     els.themeToggle.textContent = document.body.classList.contains('dark') ? '浅色模式' : '深色模式';
   }
+
   function toggleTheme() {
     document.body.classList.toggle('dark');
     localStorage.setItem(themeKey, document.body.classList.contains('dark') ? 'dark' : 'light');
@@ -295,6 +439,21 @@
   function matches(text, q) { return String(text).toLowerCase().includes(q); }
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])); }
   function escapeAttr(s) { return escapeHtml(s).replace(/'/g, '&#39;'); }
-  function debounce(fn, wait) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); }; }
-  function toast(msg) { els.toast.textContent = msg; els.toast.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => els.toast.classList.remove('show'), 1800); }
+  function cssEscape(s) {
+    if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(s);
+    return String(s).replace(/(["\\#.;?+*~':!^$[\]()=>|/@])/g, '\\$1');
+  }
+  function debounce(fn, wait) {
+    let t;
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), wait);
+    };
+  }
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => els.toast.classList.remove('show'), 1800);
+  }
 })();
