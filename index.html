@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI小说提示词词条库</title>
+  <meta name="description" content="AI小说提示词词条收藏、搜索、随机组合和自定义管理工具。" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Prompt Vocabulary Library</p>
+        <h1>AI小说提示词词条库</h1>
+        <p class="lead">点击词条即可组合输出；支持加权符号、分类浏览、全文搜索、随机组合、自定义导入和本地收藏。</p>
+      </div>
+      <div class="hero-actions">
+        <label class="searchbar" aria-label="全局搜索">
+          <span>⌕</span>
+          <input id="globalSearch" type="search" placeholder="搜索词条 / 分类 / 来源..." autocomplete="off" />
+        </label>
+        <button id="themeToggle" class="ghost-btn" type="button">深色模式</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="card selected-card" aria-label="已选择词条">
+        <div class="card-head compact-head">
+          <div>
+            <h2>已选择词条</h2>
+            <p id="selectionHint">点击下方词条后会加入这里。</p>
+          </div>
+          <div class="inline-controls">
+            <label class="mini-label">分隔符
+              <select id="separatorSelect">
+                <option value="，">中文逗号</option>
+                <option value=", ">英文逗号</option>
+                <option value="\n">换行</option>
+                <option value=" ">空格</option>
+              </select>
+            </label>
+            <label class="toggle-pill"><input id="showR18" type="checkbox" checked /> 显示R18</label>
+          </div>
+        </div>
+        <div id="selectedChips" class="selected-zone" tabindex="0" aria-live="polite"></div>
+      </section>
+
+      <section class="card output-card" aria-label="输出区">
+        <div class="card-head compact-head">
+          <div>
+            <h2>输出</h2>
+            <p>用于 AI 小说、角色设定或情节描写的词条组合。</p>
+          </div>
+          <div class="mode-badge" id="weightModeLabel">普通模式</div>
+        </div>
+        <textarea id="promptOutput" spellcheck="false" placeholder="这里是整理后的词条输出"></textarea>
+        <div class="button-row">
+          <button id="copyBtn" class="primary-btn" type="button">复制 COPY</button>
+          <button id="clearBtn" class="danger-btn" type="button">清空 CLEAR</button>
+          <button id="weightModeBtn" class="accent-btn" type="button">切换加权符号</button>
+          <button id="dedupeBtn" class="ghost-btn" type="button">去重</button>
+        </div>
+      </section>
+
+      <section class="card library-card">
+        <nav id="categoryTabs" class="tabs" aria-label="词条分类"></nav>
+        <div class="library-toolbar">
+          <div id="statLine" class="stat-line"></div>
+          <div class="inline-controls">
+            <label class="mini-label">每组显示
+              <select id="limitSelect">
+                <option value="80">80</option>
+                <option value="160">160</option>
+                <option value="9999">全部</option>
+              </select>
+            </label>
+            <button id="expandAllBtn" class="ghost-btn small" type="button">全部展开</button>
+          </div>
+        </div>
+        <div id="groupsPanel" class="groups-panel"></div>
+      </section>
+
+      <aside class="card side-card">
+        <nav class="tabs side-tabs" aria-label="工具面板">
+          <button class="tab active" data-side="custom" type="button">自定义</button>
+          <button class="tab" data-side="search" type="button">TAG搜索</button>
+          <button class="tab" data-side="random" type="button">随机组合</button>
+          <button class="tab" data-side="about" type="button">关于</button>
+        </nav>
+
+        <section class="side-panel active" data-panel="custom">
+          <div class="form-grid">
+            <label>自定义分类名称
+              <input id="customCategory" value="我的词条" />
+            </label>
+            <label>批量导入词条
+              <textarea id="customInput" placeholder="在此输入你的词条，支持中文逗号、英文逗号、空格或换行分隔"></textarea>
+            </label>
+            <div class="button-row left">
+              <button id="loadCustomBtn" class="primary-btn" type="button">加载</button>
+              <button id="clearCustomInputBtn" class="ghost-btn" type="button">清空输入</button>
+            </div>
+            <hr />
+            <label>单个新增词条
+              <input id="singleTagInput" placeholder="输入一个新词条" />
+            </label>
+            <button id="addSingleTagBtn" class="accent-btn" type="button">添加词条</button>
+            <div class="button-row left wrap">
+              <button id="exportCustomBtn" class="ghost-btn" type="button">导出自定义JSON</button>
+              <button id="importCustomBtn" class="ghost-btn" type="button">导入JSON</button>
+              <input id="importCustomFile" type="file" accept="application/json,.json" hidden />
+              <button id="wipeCustomBtn" class="danger-outline-btn" type="button">删除本地自定义</button>
+            </div>
+          </div>
+          <div id="customList" class="custom-list"></div>
+        </section>
+
+        <section class="side-panel" data-panel="search">
+          <label class="panel-search">搜索词条
+            <input id="panelSearch" type="search" placeholder="例如：气质 / 声音 / 拘束..." />
+          </label>
+          <div id="searchResults" class="result-list"></div>
+        </section>
+
+        <section class="side-panel" data-panel="random">
+          <div class="form-grid">
+            <label>随机来源分类
+              <select id="randomCategory"></select>
+            </label>
+            <label>随机数量
+              <input id="randomCount" type="number" min="1" max="80" value="8" />
+            </label>
+            <label class="toggle-pill wide"><input id="randomReplace" type="checkbox" checked /> 生成时替换当前输出</label>
+            <button id="randomBtn" class="primary-btn" type="button">随机生成</button>
+          </div>
+          <div id="randomPreview" class="result-list"></div>
+        </section>
+
+        <section class="side-panel about-panel" data-panel="about">
+          <h3>使用说明</h3>
+          <p>左侧按分类浏览词条，点击词条直接加入输出；词条上的 <b>+</b> 和 <b>-</b> 会按当前加权模式添加。</p>
+          <p>自定义内容会保存到浏览器 LocalStorage，不会上传到服务器。若更换电脑，请使用“导出自定义JSON”。</p>
+          <h3>内置来源</h3>
+          <ul id="sourceList"></ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="data/vocab.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
