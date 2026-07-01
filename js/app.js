@@ -22,7 +22,6 @@
   const els = {
     categoryTabs: $('#categoryTabs'),
     groupsPanel: $('#groupsPanel'),
-    selectedChips: $('#selectedChips'),
     promptOutput: $('#promptOutput'),
     copyBtn: $('#copyBtn'),
     clearBtn: $('#clearBtn'),
@@ -45,13 +44,16 @@
     customList: $('#customList'),
     themeToggle: $('#themeToggle'),
     toast: $('#toast'),
-    selectionHint: $('#selectionHint'),
     groupEditModal: $('#groupEditModal'),
     modalGroupName: $('#modalGroupName'),
     modalGroupCategory: $('#modalGroupCategory'),
     modalGroupTags: $('#modalGroupTags'),
     modalSaveGroupBtn: $('#modalSaveGroupBtn'),
-    modalDeleteGroupBtn: $('#modalDeleteGroupBtn')
+    modalDeleteGroupBtn: $('#modalDeleteGroupBtn'),
+    outputExpandBtn: $('#outputExpandBtn'),
+    outputShrinkBtn: $('#outputShrinkBtn'),
+    outputFullscreen: $('#outputFullscreen'),
+    promptOutputLarge: $('#promptOutputLarge')
   };
 
   init();
@@ -62,17 +64,17 @@
     renderGroups();
     renderSideTools();
     bindEvents();
-    updateOutput();
   }
 
   function bindEvents() {
     els.copyBtn.addEventListener('click', copyOutput);
     els.clearBtn.addEventListener('click', () => {
       state.selected = [];
-      updateOutput();
+      els.promptOutput.value = '';
+      if (els.promptOutputLarge) els.promptOutputLarge.value = '';
       toast('已清空输出');
     });
-    els.separatorSelect.addEventListener('change', updateOutput);
+    els.separatorSelect.addEventListener('change', () => toast('已更新分隔符，之后点击词条会使用新的分隔符'));
     els.globalSearch.addEventListener('input', debounce(() => {
       const q = els.globalSearch.value.trim();
       if (!q) {
@@ -104,12 +106,19 @@
       btn.classList.add('active');
       $$('.side-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panel === btn.dataset.side));
     }));
-    els.promptOutput.addEventListener('input', syncSelectedFromManualOutput);
+    els.promptOutput.addEventListener('input', syncLargeFromSmall);
+    els.outputExpandBtn.addEventListener('click', openOutputFullscreen);
+    els.outputShrinkBtn.addEventListener('click', closeOutputFullscreen);
+    els.promptOutputLarge.addEventListener('input', syncSmallFromLarge);
+    els.outputFullscreen.addEventListener('click', (e) => {
+      if (e.target === els.outputFullscreen) closeOutputFullscreen();
+    });
 
     $$('[data-close-modal]').forEach(el => el.addEventListener('click', closeGroupEditor));
     els.modalSaveGroupBtn.addEventListener('click', saveGroupEditor);
     els.modalDeleteGroupBtn.addEventListener('click', deleteGroupFromModal);
     document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !els.outputFullscreen.classList.contains('hidden')) closeOutputFullscreen();
       if (e.key === 'Escape' && !els.groupEditModal.classList.contains('hidden')) closeGroupEditor();
     });
   }
@@ -260,21 +269,44 @@
   }
 
   function addTag(text) {
-    state.selected.push(text);
-    updateOutput();
+    const tag = String(text || '').trim();
+    if (!tag) return;
+    const sep = els.separatorSelect.value.replace('\\n', '\n');
+    const current = els.promptOutput.value.trim();
+    els.promptOutput.value = current ? `${current}${sep}${tag}` : tag;
+    syncLargeFromSmall();
+    toast('已加入输出');
   }
 
   function updateOutput() {
-    const sep = els.separatorSelect.value.replace('\\n', '\n');
-    els.promptOutput.value = state.selected.join(sep);
-    els.selectedChips.innerHTML = state.selected.map((text, idx) => (
-      `<span class="selected-chip"><span class="chip-text">${escapeHtml(text)}</span><button class="chip-remove" type="button" data-remove="${idx}" title="移除">×</button></span>`
-    )).join('');
-    $$('[data-remove]', els.selectedChips).forEach(btn => btn.addEventListener('click', () => {
-      state.selected.splice(Number(btn.dataset.remove), 1);
-      updateOutput();
-    }));
-    els.selectionHint.textContent = state.selected.length ? `已选择 ${state.selected.length} 个词条。` : '点击下方词条后会加入这里。';
+    // 兼容旧流程：当前版本直接写入输出框。
+    syncLargeFromSmall();
+  }
+
+  function openOutputFullscreen() {
+    els.promptOutputLarge.value = els.promptOutput.value;
+    els.outputFullscreen.classList.remove('hidden');
+    els.outputFullscreen.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    setTimeout(() => els.promptOutputLarge.focus(), 30);
+  }
+
+  function closeOutputFullscreen() {
+    els.promptOutput.value = els.promptOutputLarge.value;
+    els.outputFullscreen.classList.add('hidden');
+    els.outputFullscreen.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    els.promptOutput.focus();
+  }
+
+  function syncLargeFromSmall() {
+    if (els.promptOutputLarge && !els.outputFullscreen.classList.contains('hidden')) {
+      els.promptOutputLarge.value = els.promptOutput.value;
+    }
+  }
+
+  function syncSmallFromLarge() {
+    els.promptOutput.value = els.promptOutputLarge.value;
   }
 
   async function copyOutput() {
@@ -290,9 +322,6 @@
     }
   }
 
-  function syncSelectedFromManualOutput() {
-    els.selectionHint.textContent = '输出框已手动编辑；继续点击词条会追加到选择区。';
-  }
 
   function createCategoryFromSide() {
     const name = els.newCategoryName.value.trim();

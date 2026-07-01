@@ -453,3 +453,104 @@ body.modal-open {
 .modal-actions .danger-outline-btn {
   color: var(--danger);
 }
+
+/* v8: direct output mode; selected-zone removed */
+.workspace {
+  grid-template-columns: minmax(0, 2fr) minmax(420px, 1fr);
+  grid-template-areas:
+    "output output"
+    "library side";
+}
+.output-card {
+  grid-area: output;
+  width: min(1120px, 100%);
+  justify-self: center;
+  min-height: 340px;
+  padding: 18px 20px 20px;
+}
+.output-head-reset {
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 14px;
+  margin-bottom: 16px;
+}
+.output-textarea-wrap {
+  position: relative;
+}
+#promptOutput {
+  height: 220px;
+  min-height: 220px;
+  padding-right: 58px;
+}
+.output-resize-btn,
+.output-shrink-btn {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 22px;
+  line-height: 1;
+  box-shadow: none;
+}
+.output-resize-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  background: var(--primary);
+  color: #fff;
+}
+.output-resize-btn:hover,
+.output-shrink-btn:hover {
+  transform: none;
+}
+.output-fullscreen.hidden {
+  display: none;
+}
+.output-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, .52);
+  display: grid;
+  place-items: center;
+  padding: 42px;
+}
+.output-fullscreen-panel {
+  position: relative;
+  width: min(1600px, calc(100vw - 84px));
+  height: min(850px, calc(100vh - 84px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .35);
+  padding: 24px;
+}
+#promptOutputLarge {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  resize: none;
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 17px;
+  padding: 16px;
+}
+.output-shrink-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  background: var(--danger);
+  color: #fff;
+}
+@media (max-width: 1180px) {
+  .workspace { grid-template-columns: 1fr; grid-template-areas: "output" "library" "side"; }
+  .output-card { width: 100%; }
+}
+@media (max-width: 680px) {
+  .output-fullscreen { padding: 14px; }
+  .output-fullscreen-panel { width: calc(100vw - 28px); height: calc(100vh - 28px); padding: 12px; }
+  #promptOutput { height: 180px; min-height: 180px; }
+}
