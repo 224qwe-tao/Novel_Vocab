@@ -5,10 +5,10 @@
   const state = {
     selected: [],
     activeCategory: DATA.mainCategories?.[0] || '综合词条',
-    weightModeIndex: 0,
-    weightModes: [
-      { key: 'novelai', label: '加权：{ } / [ ]', up: (t, level = 1) => `${'{'.repeat(level)}${t}${'}'.repeat(level)}`, down: (t, level = 1) => `${'['.repeat(level)}${t}${']'.repeat(level)}` },
-    ],
+    weightMode: {
+      up: (t, level = 1) => `${'{'.repeat(level)}${t}${'}'.repeat(level)}`,
+      down: (t, level = 1) => `${'['.repeat(level)}${t}${']'.repeat(level)}`
+    },
     custom: loadCustom(),
     expandedAll: false,
   };
@@ -18,7 +18,7 @@
   const els = {
     categoryTabs: $('#categoryTabs'), groupsPanel: $('#groupsPanel'), selectedChips: $('#selectedChips'),
     promptOutput: $('#promptOutput'), copyBtn: $('#copyBtn'), clearBtn: $('#clearBtn'),
-    weightModeLabel: $('#weightModeLabel'), separatorSelect: $('#separatorSelect'),
+    separatorSelect: $('#separatorSelect'),
     globalSearch: $('#globalSearch'), panelSearch: $('#panelSearch'), searchResults: $('#searchResults'),
     statLine: $('#statLine'), limitSelect: $('#limitSelect'), expandAllBtn: $('#expandAllBtn'),
     customCategory: $('#customCategory'), customInput: $('#customInput'), loadCustomBtn: $('#loadCustomBtn'),
@@ -31,12 +31,22 @@
   init();
 
   function init() {
+    removeDeprecatedUi();
     initTheme();
     renderTabs();
     renderGroups();
     renderCustomList();
     bindEvents();
     updateOutput();
+  }
+
+
+  function removeDeprecatedUi() {
+    const bannedTexts = ['切换加权符号', '切換加權符號', '去重', '显示R18', '顯示R18', '随机组合', '隨機組合', '内置来源', '內置來源', 'D站TAG导入', 'D站TAG導入'];
+    $$('button, label, .tab, .toggle-pill').forEach(el => {
+      const txt = (el.textContent || '').replace(/\s+/g, '');
+      if (bannedTexts.some(t => txt.includes(t.replace(/\s+/g, '')))) el.remove();
+    });
   }
 
   function bindEvents() {
@@ -99,7 +109,6 @@
   }
 
   function renderGroups(searchTerm = '') {
-    updateModeLabel();
     const q = (searchTerm || '').toLowerCase();
     const limit = Number(els.limitSelect.value || 80);
     let groups = visibleGroups();
@@ -146,7 +155,7 @@
 
   function updateOutput() {
     const sep = els.separatorSelect.value.replace('\\n', '\n');
-    const mode = state.weightModes[state.weightModeIndex];
+    const mode = state.weightMode;
     els.promptOutput.value = state.selected.map(item => formatTag(item.text, item.weight, mode)).join(sep);
     els.selectedChips.innerHTML = state.selected.map((item, idx) => {
       const weightClass = item.weight > 0 ? 'is-up' : item.weight < 0 ? 'is-down' : '';
@@ -178,7 +187,6 @@
     return text;
   }
 
-  function updateModeLabel() { els.weightModeLabel.textContent = state.weightModes[state.weightModeIndex].label; }
 
   async function copyOutput() {
     const val = els.promptOutput.value.trim();
