@@ -439,3 +439,17 @@ body.modal-open {
     max-width: 52vw;
   }
 }
+
+/* v7 category editor */
+.category-count-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.category-jump {
+  justify-content: center;
+}
+.form-grid .danger-outline-btn,
+.modal-actions .danger-outline-btn {
+  color: var(--danger);
+}

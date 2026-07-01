@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=8" />
+  <link rel="stylesheet" href="css/styles.css?v=9" />
 </head>
 <body>
   <div class="app-shell">
@@ -86,6 +86,27 @@
         <section class="side-panel active" data-panel="custom">
           <div class="form-grid">
             <div class="edit-block">
+              <h3>分类编辑</h3>
+              <label>新增分类名称
+                <input id="newCategoryName" placeholder="例如：世界观 / 场景 / 角色关系" />
+              </label>
+              <button id="createCategoryBtn" class="primary-btn" type="button">新增分类</button>
+              <label>选择要编辑的分类
+                <select id="categoryManageSelect"></select>
+              </label>
+              <label>修改分类名称
+                <input id="renameCategoryInput" placeholder="输入新的分类名称" />
+              </label>
+              <div class="button-row left">
+                <button id="saveCategoryBtn" class="accent-btn" type="button">保存分类名称</button>
+                <button id="deleteCategoryBtn" class="danger-outline-btn" type="button">删除空分类</button>
+              </div>
+              <p class="side-note">修改分类名称会同步移动该分类下的所有词条组。</p>
+            </div>
+
+            <hr />
+
+            <div class="edit-block">
               <h3>词条组编辑</h3>
               <label>新增词条组名称
                 <input id="newGroupName" value="我的词条" placeholder="输入新的词条组名称" />
@@ -94,26 +115,8 @@
                 <select id="newGroupCategory"></select>
               </label>
               <button id="createGroupBtn" class="primary-btn" type="button">新增词条组</button>
+              <p class="side-note">新增词条组后会自动打开编辑窗口，可直接输入或修改全部词条。</p>
             </div>
-
-            <label>选择要加入的词条组
-              <select id="targetGroupSelect"></select>
-            </label>
-
-            <label>批量导入词条
-              <textarea id="customInput" placeholder="在此输入你的词条，支持中文逗号、英文逗号、空格或换行分隔"></textarea>
-            </label>
-            <div class="button-row left">
-              <button id="loadCustomBtn" class="primary-btn" type="button">加载到所选词条组</button>
-              <button id="clearCustomInputBtn" class="ghost-btn" type="button">清空输入</button>
-            </div>
-
-            <hr />
-            <label>单个新增词条
-              <input id="singleTagInput" placeholder="输入一个新词条" />
-            </label>
-            <button id="addSingleTagBtn" class="accent-btn" type="button">添加到所选词条组</button>
-
           </div>
           <div id="customList" class="custom-list"></div>
         </section>
@@ -166,7 +169,7 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="data/vocab.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

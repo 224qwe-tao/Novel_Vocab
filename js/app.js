@@ -1,14 +1,18 @@
 (() => {
   const DATA = window.__VOCAB_DATA__ || { groups: [], mainCategories: [], stats: {} };
   const groupStoreKey = 'aiNovelVocabSite.groups.v3';
+  const categoryStoreKey = 'aiNovelVocabSite.categories.v1';
   const legacyCustomV2 = 'aiNovelVocabSite.custom.v2';
   const legacyCustomV1 = 'aiNovelVocabSite.custom.v1';
   const themeKey = 'aiNovelVocabSite.theme.v1';
 
+  const initialGroups = loadGroups();
+  const initialCategories = loadCategories(initialGroups);
   const state = {
-    groups: loadGroups(),
+    groups: initialGroups,
+    categories: initialCategories,
     selected: [],
-    activeCategory: DATA.mainCategories?.[0] || '综合词条',
+    activeCategory: initialCategories[0] || '综合词条',
     expandedAll: false,
     editingGroupId: ''
   };
@@ -29,15 +33,15 @@
     statLine: $('#statLine'),
     limitSelect: $('#limitSelect'),
     expandAllBtn: $('#expandAllBtn'),
+    newCategoryName: $('#newCategoryName'),
+    createCategoryBtn: $('#createCategoryBtn'),
+    categoryManageSelect: $('#categoryManageSelect'),
+    renameCategoryInput: $('#renameCategoryInput'),
+    saveCategoryBtn: $('#saveCategoryBtn'),
+    deleteCategoryBtn: $('#deleteCategoryBtn'),
     newGroupName: $('#newGroupName'),
     newGroupCategory: $('#newGroupCategory'),
     createGroupBtn: $('#createGroupBtn'),
-    targetGroupSelect: $('#targetGroupSelect'),
-    customInput: $('#customInput'),
-    loadCustomBtn: $('#loadCustomBtn'),
-    clearCustomInputBtn: $('#clearCustomInputBtn'),
-    singleTagInput: $('#singleTagInput'),
-    addSingleTagBtn: $('#addSingleTagBtn'),
     customList: $('#customList'),
     themeToggle: $('#themeToggle'),
     toast: $('#toast'),
@@ -87,16 +91,13 @@
       state.expandedAll = !state.expandedAll;
       renderGroups();
     });
-    els.createGroupBtn.addEventListener('click', createGroupFromSide);
-    els.loadCustomBtn.addEventListener('click', importTextToTargetGroup);
-    els.clearCustomInputBtn.addEventListener('click', () => { els.customInput.value = ''; });
-    els.addSingleTagBtn.addEventListener('click', () => {
-      const tag = els.singleTagInput.value.trim();
-      if (!tag) return toast('请输入词条');
-      addTagsToGroup(getTargetGroupId(), [tag]);
-      els.singleTagInput.value = '';
+    els.createCategoryBtn.addEventListener('click', createCategoryFromSide);
+    els.categoryManageSelect.addEventListener('change', () => {
+      els.renameCategoryInput.value = els.categoryManageSelect.value || '';
     });
-    els.targetGroupSelect.addEventListener('change', renderSideSummary);
+    els.saveCategoryBtn.addEventListener('click', renameCategoryFromSide);
+    els.deleteCategoryBtn.addEventListener('click', deleteEmptyCategoryFromSide);
+    els.createGroupBtn.addEventListener('click', createGroupFromSide);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
       $$('.side-tabs .tab').forEach(b => b.classList.remove('active'));
@@ -114,7 +115,10 @@
   }
 
   function getCategories() {
-    return [...new Set([...(DATA.mainCategories || []), ...state.groups.map(g => g.mainCategory || '综合词条')])].filter(Boolean);
+    return uniqueClean([
+      ...(state.categories || []),
+      ...state.groups.map(g => g.mainCategory || '综合词条')
+    ]).filter(c => c && c !== '搜索结果');
   }
 
   function visibleGroups() {
@@ -131,6 +135,7 @@
       els.globalSearch.value = '';
       renderTabs();
       renderGroups();
+      renderSideTools();
     }));
   }
 
@@ -226,7 +231,10 @@
     group.name = name;
     group.mainCategory = category;
     group.tags = tags;
+    if (!state.categories.includes(category)) state.categories.push(category);
+    state.categories = uniqueClean(state.categories);
     saveGroups();
+    saveCategories();
     state.activeCategory = category;
     const selectedId = group.id;
     closeGroupEditor();
@@ -246,7 +254,9 @@
   }
 
   function categoryOptions(selected) {
-    return getCategories().filter(c => c !== '搜索结果').map(cat => `<option value="${escapeAttr(cat)}" ${cat === selected ? 'selected' : ''}>${escapeHtml(cat)}</option>`).join('');
+    const cats = getCategories();
+    if (selected && !cats.includes(selected)) cats.push(selected);
+    return cats.map(cat => `<option value="${escapeAttr(cat)}" ${cat === selected ? 'selected' : ''}>${escapeHtml(cat)}</option>`).join('');
   }
 
   function addTag(text) {
@@ -284,6 +294,52 @@
     els.selectionHint.textContent = '输出框已手动编辑；继续点击词条会追加到选择区。';
   }
 
+  function createCategoryFromSide() {
+    const name = els.newCategoryName.value.trim();
+    if (!name) return toast('请输入分类名称');
+    if (getCategories().includes(name)) return toast('这个分类已经存在');
+    state.categories.push(name);
+    state.categories = uniqueClean(state.categories);
+    saveCategories();
+    state.activeCategory = name;
+    els.newCategoryName.value = '';
+    renderAfterGroupChange();
+    toast('已新增分类');
+  }
+
+  function renameCategoryFromSide() {
+    const oldName = els.categoryManageSelect.value;
+    const newName = els.renameCategoryInput.value.trim();
+    if (!oldName) return toast('请选择分类');
+    if (!newName) return toast('分类名称不能为空');
+    if (oldName === newName) return toast('分类名称没有变化');
+    if (getCategories().includes(newName) && !confirm(`分类「${newName}」已经存在，是否将「${oldName}」合并到该分类？`)) return;
+
+    state.groups.forEach(g => {
+      if (g.mainCategory === oldName) g.mainCategory = newName;
+    });
+    state.categories = uniqueClean(state.categories.map(cat => cat === oldName ? newName : cat));
+    if (!state.categories.includes(newName)) state.categories.push(newName);
+    saveGroups();
+    saveCategories();
+    state.activeCategory = newName;
+    renderAfterGroupChange();
+    toast('已修改分类名称');
+  }
+
+  function deleteEmptyCategoryFromSide() {
+    const name = els.categoryManageSelect.value;
+    if (!name) return toast('请选择分类');
+    const hasGroups = state.groups.some(g => g.mainCategory === name);
+    if (hasGroups) return toast('该分类仍有词条组，请先在编辑窗口中移动或改名相关词条组');
+    if (!confirm(`确定删除空分类「${name}」？`)) return;
+    state.categories = state.categories.filter(cat => cat !== name);
+    saveCategories();
+    if (state.activeCategory === name) state.activeCategory = getCategories()[0] || '综合词条';
+    renderAfterGroupChange();
+    toast('已删除空分类');
+  }
+
   function createGroupFromSide() {
     const name = els.newGroupName.value.trim();
     const category = els.newGroupCategory.value || state.activeCategory || '自定义';
@@ -295,22 +351,14 @@
       tags: []
     };
     state.groups.push(group);
+    if (!state.categories.includes(category)) state.categories.push(category);
+    state.categories = uniqueClean(state.categories);
     saveGroups();
+    saveCategories();
     state.activeCategory = category;
     renderAfterGroupChange(group.id);
     openGroupEditor(group.id);
-    toast('已新增词条组');
-  }
-
-  function importTextToTargetGroup() {
-    const text = els.customInput.value.trim();
-    if (!text) return toast('请输入要导入的词条');
-    const tags = splitInput(text);
-    addTagsToGroup(getTargetGroupId(), tags);
-  }
-
-  function splitInput(text) {
-    return uniqueClean(String(text).split(/[，,;；\n\t ]+/));
+    toast('已新增词条组，可在弹窗中加入词条');
   }
 
   function splitModalTags(text) {
@@ -321,48 +369,50 @@
     return [...new Set(items.map(s => String(s).trim()).filter(Boolean))];
   }
 
-  function addTagsToGroup(groupId, tags) {
-    const group = findGroup(groupId);
-    if (!group) return toast('请选择词条组');
-    const before = group.tags.length;
-    group.tags = uniqueClean([...group.tags, ...tags]);
-    saveGroups();
-    renderAfterGroupChange(group.id);
-    toast(`已添加 ${group.tags.length - before} 个新词条到「${group.name}」`);
-  }
-
-  function renderSideTools(selectedId = els.targetGroupSelect?.value) {
+  function renderSideTools(selectedId = '') {
     renderCategorySelect();
-    renderTargetGroupSelect(selectedId);
-    renderSideSummary();
+    renderCategoryManager();
+    renderSideSummary(selectedId);
   }
 
   function renderCategorySelect() {
-    els.newGroupCategory.innerHTML = getCategories().filter(c => c !== '搜索结果').map(cat => `<option value="${escapeAttr(cat)}">${escapeHtml(cat)}</option>`).join('');
-    if (getCategories().includes(state.activeCategory)) els.newGroupCategory.value = state.activeCategory;
+    const cats = getCategories();
+    els.newGroupCategory.innerHTML = cats.map(cat => `<option value="${escapeAttr(cat)}">${escapeHtml(cat)}</option>`).join('');
+    if (cats.includes(state.activeCategory)) els.newGroupCategory.value = state.activeCategory;
   }
 
-  function renderTargetGroupSelect(selectedId = '') {
-    const groups = state.groups.slice().sort((a, b) => `${a.mainCategory}/${a.name}`.localeCompare(`${b.mainCategory}/${b.name}`, 'zh-Hans'));
-    els.targetGroupSelect.innerHTML = groups.map(g => `<option value="${escapeAttr(g.id)}">${escapeHtml(g.mainCategory)} / ${escapeHtml(g.name)}（${g.tags.length}）</option>`).join('');
-    if (selectedId && state.groups.some(g => g.id === selectedId)) els.targetGroupSelect.value = selectedId;
+  function renderCategoryManager() {
+    const cats = getCategories();
+    const previous = els.categoryManageSelect.value || state.activeCategory || cats[0] || '';
+    els.categoryManageSelect.innerHTML = cats.map(cat => `<option value="${escapeAttr(cat)}">${escapeHtml(cat)}</option>`).join('');
+    if (cats.includes(previous)) els.categoryManageSelect.value = previous;
+    else if (cats.length) els.categoryManageSelect.value = cats[0];
+    els.renameCategoryInput.value = els.categoryManageSelect.value || '';
   }
 
   function renderSideSummary() {
-    const group = findGroup(getTargetGroupId());
-    if (!group) {
-      els.customList.innerHTML = '<div class="empty-state slim">暂无词条组。</div>';
+    const cats = getCategories();
+    if (!cats.length) {
+      els.customList.innerHTML = '<div class="empty-state slim">暂无分类。</div>';
       return;
     }
     els.customList.innerHTML = `<div class="result-card">
-      <div class="result-title">当前词条组：${escapeHtml(group.name)}</div>
-      <p class="side-note">分类：${escapeHtml(group.mainCategory)} · ${group.tags.length} 个词条</p>
-      <p class="side-note">如需修改名称或全部词条，点击左侧词条组旁边的「编辑」按钮。</p>
+      <div class="result-title">分类列表</div>
+      <div class="category-count-list">
+        ${cats.map(cat => {
+          const count = state.groups.filter(g => g.mainCategory === cat).length;
+          return `<button class="ghost-btn small category-jump" data-jump-category="${escapeAttr(cat)}" type="button">${escapeHtml(cat)} · ${count} 组</button>`;
+        }).join('')}
+      </div>
+      <p class="side-note">新增或修改分类后，会同步更新上方分类分页。要修改词条组内容，请点击左侧词条组旁的「编辑」。</p>
     </div>`;
-  }
-
-  function getTargetGroupId() {
-    return els.targetGroupSelect.value || state.groups[0]?.id || '';
+    $$('[data-jump-category]', els.customList).forEach(btn => btn.addEventListener('click', () => {
+      state.activeCategory = btn.dataset.jumpCategory;
+      els.globalSearch.value = '';
+      renderTabs();
+      renderGroups();
+      renderSideTools();
+    }));
   }
 
   function renderPanelSearch(q) {
@@ -382,7 +432,7 @@
     bindTagButtons(els.searchResults);
   }
 
-  function renderAfterGroupChange(selectedId = getTargetGroupId()) {
+  function renderAfterGroupChange(selectedId = '') {
     renderTabs();
     renderGroups(els.globalSearch.value.trim());
     renderSideTools(selectedId);
@@ -404,6 +454,18 @@
       groups.push({ id: makeBaseId(`custom-${name}`, groups.length), name, mainCategory: '自定义', tags });
     });
     return ensureUniqueIds(groups);
+  }
+
+  function loadCategories(groups) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(categoryStoreKey) || 'null');
+      if (Array.isArray(saved) && saved.length) return uniqueClean(saved);
+    } catch {}
+    return uniqueClean([
+      ...(DATA.mainCategories || []),
+      ...groups.map(g => g.mainCategory || '综合词条'),
+      '自定义'
+    ]);
   }
 
   function normalizeGroups(rawGroups) {
@@ -428,6 +490,10 @@
 
   function saveGroups() {
     localStorage.setItem(groupStoreKey, JSON.stringify(state.groups));
+  }
+
+  function saveCategories() {
+    localStorage.setItem(categoryStoreKey, JSON.stringify(state.categories));
   }
 
   function loadLegacyCustom() {
