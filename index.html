@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=6" />
+  <link rel="stylesheet" href="css/styles.css?v=7" />
 </head>
 <body>
   <div class="app-shell">
@@ -13,12 +13,12 @@
       <div>
         <p class="eyebrow">Prompt Vocabulary Library</p>
         <h1>AI小说提示词词条库</h1>
-        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、自定义词条组、导入和本地收藏。</p>
+        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、编辑模式和本地收藏。</p>
       </div>
       <div class="hero-actions">
         <label class="searchbar" aria-label="全局搜索">
           <span>⌕</span>
-          <input id="globalSearch" type="search" placeholder="搜索词条 / 分类 / 来源..." autocomplete="off" />
+          <input id="globalSearch" type="search" placeholder="搜索词条 / 分类..." autocomplete="off" />
         </label>
         <button id="themeToggle" class="ghost-btn" type="button">深色模式</button>
       </div>
@@ -72,6 +72,7 @@
               </select>
             </label>
             <button id="expandAllBtn" class="ghost-btn small" type="button">全部展开</button>
+            <button id="editModeBtn" class="ghost-btn small" type="button">编辑模式</button>
           </div>
         </div>
         <div id="groupsPanel" class="groups-panel"></div>
@@ -89,6 +90,9 @@
               <h3>词条组编辑</h3>
               <label>新增词条组名称
                 <input id="newGroupName" value="我的词条" placeholder="输入新的词条组名称" />
+              </label>
+              <label>新增到分类
+                <select id="newGroupCategory"></select>
               </label>
               <button id="createGroupBtn" class="primary-btn" type="button">新增词条组</button>
             </div>
@@ -111,10 +115,6 @@
             </label>
             <button id="addSingleTagBtn" class="accent-btn" type="button">添加到所选词条组</button>
 
-            <div class="button-row left wrap">
-              <button id="importCustomBtn" class="ghost-btn" type="button">导入JSON</button>
-              <input id="importCustomFile" type="file" accept="application/json,.json" hidden />
-            </div>
           </div>
           <div id="customList" class="custom-list"></div>
         </section>
@@ -140,7 +140,7 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="data/vocab.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>

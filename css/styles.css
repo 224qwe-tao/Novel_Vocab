@@ -232,3 +232,56 @@ hr { width: 100%; border: none; border-top: 1px solid var(--border); margin: 4px
   .tabs { padding: 0 8px; }
   .tab { padding-left: 12px; padding-right: 12px; }
 }
+
+.active-edit {
+  background: rgba(25, 118, 210, .10);
+  border-color: var(--primary);
+}
+.group-card.is-editing summary {
+  background: rgba(25, 118, 210, .04);
+}
+.group-edit-panel {
+  padding: 0 16px 16px;
+  display: grid;
+  gap: 12px;
+}
+.group-edit-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.3fr) minmax(150px, .8fr) auto auto;
+  gap: 8px;
+  align-items: end;
+  padding-top: 4px;
+}
+.group-edit-row label,
+.group-add-row label {
+  color: var(--muted);
+  font-weight: 700;
+  display: grid;
+  gap: 6px;
+}
+.group-add-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+.group-add-row textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+.library-edit-tags {
+  max-height: 420px;
+  overflow: auto;
+  padding-right: 4px;
+}
+.side-note {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 6px 0 0;
+}
+@media (max-width: 900px) {
+  .group-edit-row,
+  .group-add-row {
+    grid-template-columns: 1fr;
+  }
+}
