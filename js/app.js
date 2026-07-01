@@ -40,6 +40,9 @@
     renameCategoryInput: $('#renameCategoryInput'),
     saveCategoryBtn: $('#saveCategoryBtn'),
     deleteCategoryBtn: $('#deleteCategoryBtn'),
+    categoryOrderSelect: $('#categoryOrderSelect'),
+    categoryMoveUpBtn: $('#categoryMoveUpBtn'),
+    categoryMoveDownBtn: $('#categoryMoveDownBtn'),
     newGroupName: $('#newGroupName'),
     newGroupCategory: $('#newGroupCategory'),
     createGroupBtn: $('#createGroupBtn'),
@@ -98,9 +101,16 @@
     els.createCategoryBtn.addEventListener('click', createCategoryFromSide);
     els.categoryManageSelect.addEventListener('change', () => {
       els.renameCategoryInput.value = els.categoryManageSelect.value || '';
+      if (els.categoryOrderSelect) els.categoryOrderSelect.value = els.categoryManageSelect.value || '';
     });
     els.saveCategoryBtn.addEventListener('click', renameCategoryFromSide);
     els.deleteCategoryBtn.addEventListener('click', deleteSelectedCategoryFromSide);
+    els.categoryOrderSelect.addEventListener('change', () => {
+      els.categoryManageSelect.value = els.categoryOrderSelect.value || '';
+      els.renameCategoryInput.value = els.categoryOrderSelect.value || '';
+    });
+    els.categoryMoveUpBtn.addEventListener('click', () => moveSelectedCategory(-1));
+    els.categoryMoveDownBtn.addEventListener('click', () => moveSelectedCategory(1));
     els.createGroupBtn.addEventListener('click', createGroupFromSide);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
@@ -376,6 +386,28 @@
     toast(groupCount ? `已删除分类及 ${groupCount} 个词条组` : '已删除分类');
   }
 
+
+  function moveSelectedCategory(direction) {
+    const name = els.categoryOrderSelect.value || els.categoryManageSelect.value;
+    if (!name) return toast('请选择分类');
+    state.categories = getCategories();
+    const index = state.categories.indexOf(name);
+    if (index < 0) return toast('找不到分类');
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= state.categories.length) {
+      return toast(direction < 0 ? '已经在最前面' : '已经在最后面');
+    }
+    const moved = state.categories.splice(index, 1)[0];
+    state.categories.splice(nextIndex, 0, moved);
+    saveCategories();
+    state.activeCategory = name;
+    renderAfterGroupChange();
+    els.categoryManageSelect.value = name;
+    els.categoryOrderSelect.value = name;
+    els.renameCategoryInput.value = name;
+    toast('已调整分类排序');
+  }
+
   function createGroupFromSide() {
     const name = els.newGroupName.value.trim();
     const category = els.newGroupCategory.value || state.activeCategory || '自定义';
@@ -420,9 +452,14 @@
   function renderCategoryManager() {
     const cats = getCategories();
     const previous = els.categoryManageSelect.value || state.activeCategory || cats[0] || '';
-    els.categoryManageSelect.innerHTML = cats.map(cat => `<option value="${escapeAttr(cat)}">${escapeHtml(cat)}</option>`).join('');
-    if (cats.includes(previous)) els.categoryManageSelect.value = previous;
-    else if (cats.length) els.categoryManageSelect.value = cats[0];
+    const options = cats.map((cat, idx) => `<option value="${escapeAttr(cat)}">${idx + 1}. ${escapeHtml(cat)}</option>`).join('');
+    els.categoryManageSelect.innerHTML = options;
+    els.categoryOrderSelect.innerHTML = options;
+    const value = cats.includes(previous) ? previous : (cats[0] || '');
+    if (value) {
+      els.categoryManageSelect.value = value;
+      els.categoryOrderSelect.value = value;
+    }
     els.renameCategoryInput.value = els.categoryManageSelect.value || '';
   }
 
@@ -495,9 +532,10 @@
 
   function loadCategories(groups) {
     const saved = readStoredArray(categoryStoreKey) || oldCategoryStoreKeys.map(readStoredArray).find(Array.isArray) || [];
+    const baseCategories = DATA.mainCategories || [];
     return uniqueClean([
-      ...(DATA.mainCategories || []),
-      ...saved,
+      ...(saved.length ? saved : baseCategories),
+      ...(saved.length ? baseCategories : []),
       ...groups.map(g => g.mainCategory || '综合词条'),
       '自定义'
     ]);
