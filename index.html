@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
-  <meta name="description" content="AI小说提示词词条收藏、搜索、随机组合和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
+  <link rel="stylesheet" href="css/styles.css?v=3" />
 </head>
 <body>
   <div class="app-shell">
@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Prompt Vocabulary Library</p>
         <h1>AI小说提示词词条库</h1>
-        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、随机组合、自定义导入和本地收藏。</p>
+        <p class="lead">点击词条即可组合输出；支持分类浏览、全文搜索、自定义导入和本地收藏。</p>
       </div>
       <div class="hero-actions">
         <label class="searchbar" aria-label="全局搜索">
@@ -40,7 +40,6 @@
                 <option value=" ">空格</option>
               </select>
             </label>
-            <label class="toggle-pill"><input id="showR18" type="checkbox" checked /> 显示R18</label>
           </div>
         </div>
         <div id="selectedChips" class="selected-zone" tabindex="0" aria-live="polite"></div>
@@ -58,7 +57,6 @@
         <div class="button-row">
           <button id="copyBtn" class="primary-btn" type="button">复制 COPY</button>
           <button id="clearBtn" class="danger-btn" type="button">清空 CLEAR</button>
-          <button id="dedupeBtn" class="ghost-btn" type="button">去重</button>
         </div>
       </section>
 
@@ -84,7 +82,6 @@
         <nav class="tabs side-tabs" aria-label="工具面板">
           <button class="tab active" data-side="custom" type="button">自定义</button>
           <button class="tab" data-side="search" type="button">TAG搜索</button>
-          <button class="tab" data-side="random" type="button">随机组合</button>
           <button class="tab" data-side="about" type="button">关于</button>
         </nav>
 
@@ -122,20 +119,6 @@
           <div id="searchResults" class="result-list"></div>
         </section>
 
-        <section class="side-panel" data-panel="random">
-          <div class="form-grid">
-            <label>随机来源分类
-              <select id="randomCategory"></select>
-            </label>
-            <label>随机数量
-              <input id="randomCount" type="number" min="1" max="80" value="8" />
-            </label>
-            <label class="toggle-pill wide"><input id="randomReplace" type="checkbox" checked /> 生成时替换当前输出</label>
-            <button id="randomBtn" class="primary-btn" type="button">随机生成</button>
-          </div>
-          <div id="randomPreview" class="result-list"></div>
-        </section>
-
         <section class="side-panel about-panel" data-panel="about">
           <h3>使用说明</h3>
           <p>左侧按分类浏览词条，点击词条直接加入输出；词条加入上方选择区后，可在词条左侧使用 <b>+</b> / <b>-</b> 调整加权。</p>
@@ -146,7 +129,7 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js"></script>
-  <script src="js/app.js"></script>
+  <script src="data/vocab.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 </body>
 </html>

@@ -10,7 +10,6 @@
       { key: 'novelai', label: '加权：{ } / [ ]', up: (t, level = 1) => `${'{'.repeat(level)}${t}${'}'.repeat(level)}`, down: (t, level = 1) => `${'['.repeat(level)}${t}${']'.repeat(level)}` },
     ],
     custom: loadCustom(),
-    showR18: true,
     expandedAll: false,
   };
 
@@ -19,14 +18,13 @@
   const els = {
     categoryTabs: $('#categoryTabs'), groupsPanel: $('#groupsPanel'), selectedChips: $('#selectedChips'),
     promptOutput: $('#promptOutput'), copyBtn: $('#copyBtn'), clearBtn: $('#clearBtn'),
-    weightModeLabel: $('#weightModeLabel'), dedupeBtn: $('#dedupeBtn'), separatorSelect: $('#separatorSelect'),
+    weightModeLabel: $('#weightModeLabel'), separatorSelect: $('#separatorSelect'),
     globalSearch: $('#globalSearch'), panelSearch: $('#panelSearch'), searchResults: $('#searchResults'),
-    statLine: $('#statLine'), limitSelect: $('#limitSelect'), expandAllBtn: $('#expandAllBtn'), showR18: $('#showR18'),
+    statLine: $('#statLine'), limitSelect: $('#limitSelect'), expandAllBtn: $('#expandAllBtn'),
     customCategory: $('#customCategory'), customInput: $('#customInput'), loadCustomBtn: $('#loadCustomBtn'),
     clearCustomInputBtn: $('#clearCustomInputBtn'), singleTagInput: $('#singleTagInput'), addSingleTagBtn: $('#addSingleTagBtn'),
     customList: $('#customList'), exportCustomBtn: $('#exportCustomBtn'), importCustomBtn: $('#importCustomBtn'),
-    importCustomFile: $('#importCustomFile'), wipeCustomBtn: $('#wipeCustomBtn'), randomCategory: $('#randomCategory'),
-    randomCount: $('#randomCount'), randomReplace: $('#randomReplace'), randomBtn: $('#randomBtn'), randomPreview: $('#randomPreview'),
+    importCustomFile: $('#importCustomFile'), wipeCustomBtn: $('#wipeCustomBtn'),
     themeToggle: $('#themeToggle'), toast: $('#toast'), selectionHint: $('#selectionHint')
   };
 
@@ -35,7 +33,6 @@
   function init() {
     initTheme();
     renderTabs();
-    renderRandomCategories();
     renderGroups();
     renderCustomList();
     bindEvents();
@@ -45,7 +42,6 @@
   function bindEvents() {
     els.copyBtn.addEventListener('click', copyOutput);
     els.clearBtn.addEventListener('click', () => { state.selected = []; updateOutput(); toast('已清空输出'); });
-    els.dedupeBtn.addEventListener('click', dedupeSelection);
     els.separatorSelect.addEventListener('change', updateOutput);
     els.globalSearch.addEventListener('input', debounce(() => {
       const q = els.globalSearch.value.trim();
@@ -57,7 +53,6 @@
     els.panelSearch.addEventListener('input', debounce(() => renderPanelSearch(els.panelSearch.value.trim()), 120));
     els.limitSelect.addEventListener('change', renderGroups);
     els.expandAllBtn.addEventListener('click', () => { state.expandedAll = !state.expandedAll; renderGroups(); });
-    els.showR18.addEventListener('change', () => { state.showR18 = els.showR18.checked; renderGroups(); renderRandomCategories(); });
     els.loadCustomBtn.addEventListener('click', importCustomText);
     els.clearCustomInputBtn.addEventListener('click', () => { els.customInput.value = ''; });
     els.addSingleTagBtn.addEventListener('click', () => {
@@ -70,7 +65,6 @@
     els.importCustomBtn.addEventListener('click', () => els.importCustomFile.click());
     els.importCustomFile.addEventListener('change', importCustomJson);
     els.wipeCustomBtn.addEventListener('click', wipeCustom);
-    els.randomBtn.addEventListener('click', randomGenerate);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
       $$('.side-tabs .tab').forEach(b => b.classList.remove('active'));
@@ -90,7 +84,7 @@
   }
 
   function visibleGroups() {
-    return allGroups().filter(g => state.showR18 || !g.r18);
+    return allGroups();
   }
 
   function renderTabs() {
@@ -116,7 +110,7 @@
       groups = groups.filter(g => g.mainCategory === state.activeCategory);
     }
     const totalTags = groups.reduce((sum, g) => sum + g.tags.length, 0);
-    els.statLine.textContent = `${groups.length} 个词条组 · ${totalTags} 个可见词条 · 内置去重词条 ${DATA.stats?.uniqueTagCount || 0} 个`;
+    els.statLine.textContent = `${groups.length} 个词条组 · ${totalTags} 个可见词条`;
     els.expandAllBtn.textContent = state.expandedAll ? '全部折叠' : '全部展开';
     if (!groups.length) {
       els.groupsPanel.innerHTML = `<div class="empty-state">没有找到匹配的词条。</div>`;
@@ -199,16 +193,6 @@
     }
   }
 
-  function dedupeSelection() {
-    const seen = new Set();
-    state.selected = state.selected.filter(item => {
-      const key = `${item.text}|${item.weight}`;
-      if (seen.has(key)) return false;
-      seen.add(key); return true;
-    });
-    updateOutput(); toast('已去除重复词条');
-  }
-
   function syncSelectedFromManualOutput() {
     // Manual editing is allowed; it does not overwrite chips to avoid accidental parsing errors.
     els.selectionHint.textContent = '输出框已手动编辑；继续点击词条会追加到选择区。';
@@ -230,7 +214,7 @@
     const merged = new Set(state.custom[category]);
     tags.forEach(t => merged.add(t));
     state.custom[category] = [...merged];
-    saveCustom(); renderCustomList(); renderTabs(); renderGroups(); renderRandomCategories();
+    saveCustom(); renderCustomList(); renderTabs(); renderGroups();
     toast(`已添加 ${tags.length} 个自定义词条`);
   }
 
@@ -245,7 +229,7 @@
       const cat = btn.dataset.delCat, tag = btn.dataset.delTag;
       state.custom[cat] = (state.custom[cat] || []).filter(t => t !== tag);
       if (!state.custom[cat].length) delete state.custom[cat];
-      saveCustom(); renderCustomList(); renderGroups(); renderRandomCategories();
+      saveCustom(); renderCustomList(); renderGroups();
     }));
   }
 
@@ -277,7 +261,7 @@
 
   function wipeCustom() {
     if (!confirm('确定删除本浏览器保存的所有自定义词条？')) return;
-    state.custom = {}; saveCustom(); renderCustomList(); renderTabs(); renderGroups(); renderRandomCategories(); toast('已删除自定义词条');
+    state.custom = {}; saveCustom(); renderCustomList(); renderTabs(); renderGroups(); toast('已删除自定义词条');
   }
 
   function renderPanelSearch(q) {
@@ -288,28 +272,6 @@
     els.searchResults.innerHTML = results.slice(0, 20).map(g => `<div class="result-card"><div class="result-title">${escapeHtml(g.name)} · ${g.tags.length}</div><div class="result-tags">${g.tags.map(tagButton).join('')}</div></div>`).join('');
     bindTagButtons(els.searchResults);
   }
-
-  function renderRandomCategories() {
-    const cats = ['全部', ...new Set(visibleGroups().map(g => g.mainCategory))];
-    els.randomCategory.innerHTML = cats.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('');
-  }
-
-  function randomGenerate() {
-    const cat = els.randomCategory.value;
-    const count = Math.max(1, Math.min(80, Number(els.randomCount.value || 8)));
-    let pool = visibleGroups().filter(g => cat === '全部' || g.mainCategory === cat).flatMap(g => g.tags);
-    pool = [...new Set(pool)];
-    if (!pool.length) return toast('该分类没有可随机的词条');
-    shuffle(pool);
-    const picked = pool.slice(0, count);
-    if (els.randomReplace.checked) state.selected = [];
-    picked.forEach(t => state.selected.push({ text: t, weight: 0 }));
-    updateOutput();
-    els.randomPreview.innerHTML = `<div class="result-card"><div class="result-title">本次随机</div><div class="result-tags">${picked.map(tagButton).join('')}</div></div>`;
-    bindTagButtons(els.randomPreview);
-    toast(`已随机生成 ${picked.length} 个词条`);
-  }
-
 
   function initTheme() {
     const saved = localStorage.getItem(themeKey);
@@ -326,6 +288,5 @@
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])); }
   function escapeAttr(s) { return escapeHtml(s).replace(/'/g, '&#39;'); }
   function debounce(fn, wait) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); }; }
-  function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
   function toast(msg) { els.toast.textContent = msg; els.toast.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => els.toast.classList.remove('show'), 1800); }
 })();
