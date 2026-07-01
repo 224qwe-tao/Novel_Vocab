@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
 </head>
 <body>
   <div class="app-shell">
@@ -38,6 +38,7 @@
                 <option value=", ">英文逗号</option>
                 <option value="\n">换行</option>
                 <option value=" ">空格</option>
+                <option value="">无分隔符</option>
               </select>
             </label>
           </div>
@@ -92,9 +93,9 @@
               </label>
               <div class="button-row left">
                 <button id="saveCategoryBtn" class="accent-btn" type="button">保存分类名称</button>
-                <button id="deleteCategoryBtn" class="danger-outline-btn" type="button">删除空分类</button>
+                <button id="deleteCategoryBtn" class="danger-outline-btn" type="button">删除所选分类</button>
               </div>
-              <p class="side-note">修改分类名称会同步移动该分类下的所有词条组。</p>
+              <p class="side-note">修改分类名称会同步移动该分类下的所有词条组。删除分类会一并删除该分类下的所有词条组。</p>
             </div>
 
             <hr />
@@ -168,7 +169,7 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=10"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="data/vocab.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

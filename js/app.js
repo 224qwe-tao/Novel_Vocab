@@ -74,7 +74,7 @@
       if (els.promptOutputLarge) els.promptOutputLarge.value = '';
       toast('已清空输出');
     });
-    els.separatorSelect.addEventListener('change', () => toast('已更新分隔符，之后点击词条会使用新的分隔符'));
+    els.separatorSelect.addEventListener('change', () => toast(els.separatorSelect.value === '' ? '已切换为无分隔符模式' : '已更新分隔符，之后点击词条会使用新的分隔符'));
     els.globalSearch.addEventListener('input', debounce(() => {
       const q = els.globalSearch.value.trim();
       if (!q) {
@@ -98,7 +98,7 @@
       els.renameCategoryInput.value = els.categoryManageSelect.value || '';
     });
     els.saveCategoryBtn.addEventListener('click', renameCategoryFromSide);
-    els.deleteCategoryBtn.addEventListener('click', deleteEmptyCategoryFromSide);
+    els.deleteCategoryBtn.addEventListener('click', deleteSelectedCategoryFromSide);
     els.createGroupBtn.addEventListener('click', createGroupFromSide);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
@@ -356,17 +356,22 @@
     toast('已修改分类名称');
   }
 
-  function deleteEmptyCategoryFromSide() {
+  function deleteSelectedCategoryFromSide() {
     const name = els.categoryManageSelect.value;
     if (!name) return toast('请选择分类');
-    const hasGroups = state.groups.some(g => g.mainCategory === name);
-    if (hasGroups) return toast('该分类仍有词条组，请先在编辑窗口中移动或改名相关词条组');
-    if (!confirm(`确定删除空分类「${name}」？`)) return;
+    const groupCount = state.groups.filter(g => g.mainCategory === name).length;
+    const confirmText = groupCount
+      ? `确定删除分类「${name}」？该分类下的 ${groupCount} 个词条组也会一并删除。`
+      : `确定删除分类「${name}」？`;
+    if (!confirm(confirmText)) return;
+    state.groups = state.groups.filter(g => g.mainCategory !== name);
     state.categories = state.categories.filter(cat => cat !== name);
+    if (!state.categories.length) state.categories.push('综合词条');
+    saveGroups();
     saveCategories();
     if (state.activeCategory === name) state.activeCategory = getCategories()[0] || '综合词条';
     renderAfterGroupChange();
-    toast('已删除空分类');
+    toast(groupCount ? `已删除分类及 ${groupCount} 个词条组` : '已删除分类');
   }
 
   function createGroupFromSide() {
