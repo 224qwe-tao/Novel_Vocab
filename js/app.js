@@ -10,7 +10,7 @@
     selected: [],
     activeCategory: DATA.mainCategories?.[0] || '综合词条',
     expandedAll: false,
-    editMode: false,
+    editingGroupId: ''
   };
 
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -29,7 +29,6 @@
     statLine: $('#statLine'),
     limitSelect: $('#limitSelect'),
     expandAllBtn: $('#expandAllBtn'),
-    editModeBtn: $('#editModeBtn'),
     newGroupName: $('#newGroupName'),
     newGroupCategory: $('#newGroupCategory'),
     createGroupBtn: $('#createGroupBtn'),
@@ -42,7 +41,13 @@
     customList: $('#customList'),
     themeToggle: $('#themeToggle'),
     toast: $('#toast'),
-    selectionHint: $('#selectionHint')
+    selectionHint: $('#selectionHint'),
+    groupEditModal: $('#groupEditModal'),
+    modalGroupName: $('#modalGroupName'),
+    modalGroupCategory: $('#modalGroupCategory'),
+    modalGroupTags: $('#modalGroupTags'),
+    modalSaveGroupBtn: $('#modalSaveGroupBtn'),
+    modalDeleteGroupBtn: $('#modalDeleteGroupBtn')
   };
 
   init();
@@ -82,11 +87,6 @@
       state.expandedAll = !state.expandedAll;
       renderGroups();
     });
-    els.editModeBtn.addEventListener('click', () => {
-      state.editMode = !state.editMode;
-      renderGroups();
-      toast(state.editMode ? '已进入编辑模式' : '已退出编辑模式');
-    });
     els.createGroupBtn.addEventListener('click', createGroupFromSide);
     els.loadCustomBtn.addEventListener('click', importTextToTargetGroup);
     els.clearCustomInputBtn.addEventListener('click', () => { els.customInput.value = ''; });
@@ -104,6 +104,13 @@
       $$('.side-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panel === btn.dataset.side));
     }));
     els.promptOutput.addEventListener('input', syncSelectedFromManualOutput);
+
+    $$('[data-close-modal]').forEach(el => el.addEventListener('click', closeGroupEditor));
+    els.modalSaveGroupBtn.addEventListener('click', saveGroupEditor);
+    els.modalDeleteGroupBtn.addEventListener('click', deleteGroupFromModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !els.groupEditModal.classList.contains('hidden')) closeGroupEditor();
+    });
   }
 
   function getCategories() {
@@ -143,8 +150,6 @@
     const totalTags = groups.reduce((sum, g) => sum + g.tags.length, 0);
     els.statLine.textContent = `${groups.length} 个词条组 · ${totalTags} 个可见词条`;
     els.expandAllBtn.textContent = state.expandedAll ? '全部折叠' : '全部展开';
-    els.editModeBtn.textContent = state.editMode ? '退出编辑模式' : '编辑模式';
-    els.editModeBtn.classList.toggle('active-edit', state.editMode);
 
     if (!groups.length) {
       els.groupsPanel.innerHTML = `<div class="empty-state">没有找到匹配的词条。</div>`;
@@ -155,55 +160,24 @@
       const shown = g.tags.slice(0, limit);
       const more = Math.max(0, g.tags.length - shown.length);
       const openAttr = state.expandedAll ? 'open' : '';
-      const body = state.editMode ? editGroupBody(g, shown, more) : normalGroupBody(g, shown, more);
-      return `<details class="group-card ${state.editMode ? 'is-editing' : ''}" ${openAttr}>
-        <summary><span class="summary-left"><span>${escapeHtml(g.name)}</span></span><span class="group-meta">${g.tags.length}词</span></summary>
-        ${body}
+      return `<details class="group-card" ${openAttr}>
+        <summary>
+          <span class="summary-left"><span class="group-title">${escapeHtml(g.name)}</span></span>
+          <span class="summary-actions">
+            <span class="group-meta">${g.tags.length}词</span>
+            <button class="ghost-btn small group-edit-btn" data-open-editor="${escapeAttr(g.id)}" type="button">编辑</button>
+          </span>
+        </summary>
+        ${normalGroupBody(g, shown, more)}
       </details>`;
     }).join('');
 
     bindTagButtons(els.groupsPanel);
-    if (state.editMode) bindEditControls(els.groupsPanel);
+    bindGroupEditorButtons(els.groupsPanel);
   }
 
   function normalGroupBody(g, shown, more) {
     return `<div class="tag-grid">${shown.map(tagButton).join('')}${more ? `<span class="group-meta more-note">还有 ${more} 个，切换“每组显示”为全部可见</span>` : ''}</div>`;
-  }
-
-  function editGroupBody(g, shown, more) {
-    return `<div class="group-edit-panel">
-      <div class="group-edit-row">
-        <label>词条组名称
-          <input data-group-name="${escapeAttr(g.id)}" value="${escapeAttr(g.name)}" />
-        </label>
-        <label>分类
-          <select data-group-category="${escapeAttr(g.id)}">${categoryOptions(g.mainCategory)}</select>
-        </label>
-        <button class="primary-btn small" data-save-group="${escapeAttr(g.id)}" type="button">保存词条组</button>
-        <button class="danger-outline-btn small" data-delete-group="${escapeAttr(g.id)}" type="button">删除词条组</button>
-      </div>
-      <div class="group-add-row">
-        <textarea data-new-tags="${escapeAttr(g.id)}" placeholder="新增词条：支持中文逗号、英文逗号、空格或换行分隔"></textarea>
-        <button class="accent-btn small" data-add-tags="${escapeAttr(g.id)}" type="button">添加词条</button>
-      </div>
-      <div class="editable-tags library-edit-tags">
-        ${shown.length ? shown.map((tag, idx) => editableTagRow(g.id, tag, idx)).join('') : '<div class="empty-state slim">这个词条组暂时没有词条。</div>'}
-        ${more ? `<span class="group-meta more-note">还有 ${more} 个，切换“每组显示”为全部可编辑</span>` : ''}
-      </div>
-    </div>`;
-  }
-
-  function categoryOptions(selected) {
-    return getCategories().filter(c => c !== '搜索结果').map(cat => `<option value="${escapeAttr(cat)}" ${cat === selected ? 'selected' : ''}>${escapeHtml(cat)}</option>`).join('');
-  }
-
-  function editableTagRow(groupId, tag, idx) {
-    const key = `${groupId}::${idx}`;
-    return `<span class="custom-row tag-edit-row">
-      <input class="tag-edit-input" value="${escapeAttr(tag)}" data-edit-tag="${escapeAttr(key)}" aria-label="编辑词条" />
-      <button class="ghost-btn small" data-save-tag="${escapeAttr(groupId)}" data-tag-index="${idx}" type="button">保存</button>
-      <button class="danger-outline-btn small" data-del-tag="${escapeAttr(groupId)}" data-tag-index="${idx}" type="button">删除</button>
-    </span>`;
   }
 
   function tagButton(t) {
@@ -215,39 +189,64 @@
     $$('[data-tag]', root).forEach(btn => btn.addEventListener('click', () => addTag(btn.dataset.tag)));
   }
 
-  function bindEditControls(root) {
-    $$('[data-save-group]', root).forEach(btn => btn.addEventListener('click', () => {
-      const id = btn.dataset.saveGroup;
-      const name = $(`[data-group-name="${cssEscape(id)}"]`, root)?.value.trim();
-      const category = $(`[data-group-category="${cssEscape(id)}"]`, root)?.value.trim();
-      updateGroup(id, { name, mainCategory: category });
+  function bindGroupEditorButtons(root) {
+    $$('[data-open-editor]', root).forEach(btn => btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openGroupEditor(btn.dataset.openEditor);
     }));
-    $$('[data-delete-group]', root).forEach(btn => btn.addEventListener('click', () => {
-      const group = findGroup(btn.dataset.deleteGroup);
-      if (!group) return;
-      if (!confirm(`确定删除词条组「${group.name}」？`)) return;
-      state.groups = state.groups.filter(g => g.id !== group.id);
-      saveGroups();
-      renderAfterGroupChange();
-      toast('已删除词条组');
-    }));
-    $$('[data-add-tags]', root).forEach(btn => btn.addEventListener('click', () => {
-      const id = btn.dataset.addTags;
-      const textarea = $(`[data-new-tags="${cssEscape(id)}"]`, root);
-      const tags = splitInput(textarea?.value || '');
-      if (!tags.length) return toast('请输入要添加的词条');
-      addTagsToGroup(id, tags);
-      if (textarea) textarea.value = '';
-    }));
-    $$('[data-save-tag]', root).forEach(btn => btn.addEventListener('click', () => {
-      const groupId = btn.dataset.saveTag;
-      const idx = Number(btn.dataset.tagIndex);
-      const input = $(`[data-edit-tag="${cssEscape(`${groupId}::${idx}`)}"]`, root);
-      updateTag(groupId, idx, input?.value.trim() || '');
-    }));
-    $$('[data-del-tag]', root).forEach(btn => btn.addEventListener('click', () => {
-      deleteTag(btn.dataset.delTag, Number(btn.dataset.tagIndex));
-    }));
+  }
+
+  function openGroupEditor(groupId) {
+    const group = findGroup(groupId);
+    if (!group) return toast('找不到词条组');
+    state.editingGroupId = group.id;
+    els.modalGroupName.value = group.name;
+    els.modalGroupCategory.innerHTML = categoryOptions(group.mainCategory);
+    els.modalGroupCategory.value = group.mainCategory;
+    els.modalGroupTags.value = group.tags.join('\n');
+    els.groupEditModal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    setTimeout(() => els.modalGroupName.focus(), 40);
+  }
+
+  function closeGroupEditor() {
+    state.editingGroupId = '';
+    els.groupEditModal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  }
+
+  function saveGroupEditor() {
+    const group = findGroup(state.editingGroupId);
+    if (!group) return toast('找不到词条组');
+    const name = els.modalGroupName.value.trim();
+    const category = els.modalGroupCategory.value.trim() || group.mainCategory || '综合词条';
+    const tags = splitModalTags(els.modalGroupTags.value);
+    if (!name) return toast('词条组名称不能为空');
+    group.name = name;
+    group.mainCategory = category;
+    group.tags = tags;
+    saveGroups();
+    state.activeCategory = category;
+    const selectedId = group.id;
+    closeGroupEditor();
+    renderAfterGroupChange(selectedId);
+    toast('已保存词条组内容');
+  }
+
+  function deleteGroupFromModal() {
+    const group = findGroup(state.editingGroupId);
+    if (!group) return toast('找不到词条组');
+    if (!confirm(`确定删除词条组「${group.name}」？`)) return;
+    state.groups = state.groups.filter(g => g.id !== group.id);
+    saveGroups();
+    closeGroupEditor();
+    renderAfterGroupChange();
+    toast('已删除词条组');
+  }
+
+  function categoryOptions(selected) {
+    return getCategories().filter(c => c !== '搜索结果').map(cat => `<option value="${escapeAttr(cat)}" ${cat === selected ? 'selected' : ''}>${escapeHtml(cat)}</option>`).join('');
   }
 
   function addTag(text) {
@@ -299,6 +298,7 @@
     saveGroups();
     state.activeCategory = category;
     renderAfterGroupChange(group.id);
+    openGroupEditor(group.id);
     toast('已新增词条组');
   }
 
@@ -310,50 +310,25 @@
   }
 
   function splitInput(text) {
-    return [...new Set(String(text).split(/[，,;；\n\t ]+/).map(s => s.trim()).filter(Boolean))];
+    return uniqueClean(String(text).split(/[，,;；\n\t ]+/));
+  }
+
+  function splitModalTags(text) {
+    return uniqueClean(String(text).split(/[，,;；\n\t]+/));
+  }
+
+  function uniqueClean(items) {
+    return [...new Set(items.map(s => String(s).trim()).filter(Boolean))];
   }
 
   function addTagsToGroup(groupId, tags) {
     const group = findGroup(groupId);
     if (!group) return toast('请选择词条组');
     const before = group.tags.length;
-    group.tags = [...new Set([...group.tags, ...tags])];
+    group.tags = uniqueClean([...group.tags, ...tags]);
     saveGroups();
     renderAfterGroupChange(group.id);
     toast(`已添加 ${group.tags.length - before} 个新词条到「${group.name}」`);
-  }
-
-  function updateGroup(id, patch) {
-    const group = findGroup(id);
-    if (!group) return toast('找不到词条组');
-    if (!patch.name) return toast('词条组名称不能为空');
-    group.name = patch.name;
-    group.mainCategory = patch.mainCategory || group.mainCategory || '综合词条';
-    saveGroups();
-    state.activeCategory = group.mainCategory;
-    renderAfterGroupChange(group.id);
-    toast('已保存词条组');
-  }
-
-  function updateTag(groupId, idx, value) {
-    const group = findGroup(groupId);
-    if (!group) return toast('找不到词条组');
-    if (!value) return toast('词条不能为空');
-    if (!group.tags[idx]) return toast('找不到词条');
-    group.tags[idx] = value;
-    group.tags = [...new Set(group.tags.map(t => String(t).trim()).filter(Boolean))];
-    saveGroups();
-    renderAfterGroupChange(group.id);
-    toast('已更新词条');
-  }
-
-  function deleteTag(groupId, idx) {
-    const group = findGroup(groupId);
-    if (!group || !group.tags[idx]) return toast('找不到词条');
-    group.tags.splice(idx, 1);
-    saveGroups();
-    renderAfterGroupChange(group.id);
-    toast('已删除词条');
   }
 
   function renderSideTools(selectedId = els.targetGroupSelect?.value) {
@@ -382,7 +357,7 @@
     els.customList.innerHTML = `<div class="result-card">
       <div class="result-title">当前词条组：${escapeHtml(group.name)}</div>
       <p class="side-note">分类：${escapeHtml(group.mainCategory)} · ${group.tags.length} 个词条</p>
-      <p class="side-note">需要修改名称、分类或删除词条时，请打开左侧「编辑模式」。</p>
+      <p class="side-note">如需修改名称或全部词条，点击左侧词条组旁边的「编辑」按钮。</p>
     </div>`;
   }
 
@@ -436,7 +411,7 @@
       id: String(g.id || makeBaseId(g.name || 'group', i)),
       name: String(g.name || `词条组 ${i + 1}`).trim(),
       mainCategory: String(g.mainCategory || '综合词条').trim(),
-      tags: [...new Set((g.tags || []).map(t => String(t).trim()).filter(Boolean))]
+      tags: uniqueClean(g.tags || [])
     })).filter(g => g.name);
     return ensureUniqueIds(groups);
   }
@@ -463,7 +438,7 @@
         if (data && typeof data === 'object' && !Array.isArray(data)) {
           Object.entries(data).forEach(([name, tags]) => {
             if (!Array.isArray(tags)) return;
-            out[name] = [...new Set([...(out[name] || []), ...tags.map(t => String(t).trim()).filter(Boolean)])];
+            out[name] = uniqueClean([...(out[name] || []), ...tags]);
           });
         }
       } catch {}
@@ -502,10 +477,6 @@
   function matches(text, q) { return String(text).toLowerCase().includes(q); }
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])); }
   function escapeAttr(s) { return escapeHtml(s).replace(/'/g, '&#39;'); }
-  function cssEscape(s) {
-    if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(s);
-    return String(s).replace(/(["\\#.;?+*~':!^$[\]()=>|/@])/g, '\\$1');
-  }
   function debounce(fn, wait) {
     let t;
     return (...args) => {

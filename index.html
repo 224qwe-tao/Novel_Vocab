@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=7" />
+  <link rel="stylesheet" href="css/styles.css?v=8" />
 </head>
 <body>
   <div class="app-shell">
@@ -72,7 +72,6 @@
               </select>
             </label>
             <button id="expandAllBtn" class="ghost-btn small" type="button">全部展开</button>
-            <button id="editModeBtn" class="ghost-btn small" type="button">编辑模式</button>
           </div>
         </div>
         <div id="groupsPanel" class="groups-panel"></div>
@@ -139,8 +138,35 @@
     </main>
   </div>
 
+
+  <div id="groupEditModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="groupEditTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card group-editor-modal">
+      <button class="modal-close" data-close-modal type="button" aria-label="关闭">×</button>
+      <p class="eyebrow">Edit Vocabulary Group</p>
+      <h2 id="groupEditTitle">编辑词条组</h2>
+      <p class="modal-note">可修改词条组名称、分类和全部词条内容。词条建议一行一个；也支持用中文逗号、英文逗号或分号分隔。</p>
+      <div class="modal-grid">
+        <label>词条组名称
+          <input id="modalGroupName" placeholder="输入词条组名称" />
+        </label>
+        <label>分类
+          <select id="modalGroupCategory"></select>
+        </label>
+        <label class="full-span">全部词条
+          <textarea id="modalGroupTags" spellcheck="false" placeholder="一行一个词条，可直接修改、删除或新增"></textarea>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button id="modalSaveGroupBtn" class="primary-btn" type="button">保存修改</button>
+        <button id="modalDeleteGroupBtn" class="danger-outline-btn" type="button">删除词条组</button>
+        <button class="ghost-btn" data-close-modal type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="data/vocab.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
 </body>
 </html>
