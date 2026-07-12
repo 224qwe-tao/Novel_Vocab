@@ -1,18 +1,33 @@
 # AI 小说提示词词条库
 
-一个可直接部署到 GitHub Pages 的静态词条收藏网站，用于 AI 小说、角色设定、情节描写和世界观设定提示词整理。
+这是一个可直接部署到 GitHub Pages 的静态词条收藏网站。支持分类浏览、全文搜索、点击词条直接输出、编辑词条组、编辑分类、手动调整分类排序、放大输出框，以及 GitHub 同步保存。
 
-## v11 更新内容
+## v12 新增
 
-- 「分隔符」默认改为「无分隔符」。
-- 新增分类排序功能，可选择分类后使用「上移 / 下移」手动调整分类页签顺序，例如把「自定义」放到「世界观」前。
-- 新增「世界观」分类。
-- 已加入常见小说世界观模板，包括世界类型、社会结构、力量体系、地点舞台、组织势力、主要冲突、世界规则、故事开局、一句话世界观和氛围风格。
-- 保留输出方格放大 / 缩小、词条组编辑、分类新增 / 修改 / 删除、全文搜索和本地保存功能。
+- 新增「GitHub 保存同步」功能。
+- 可把当前浏览器中的全部分类、词条组和词条修改保存到 GitHub 仓库。
+- 保存后会更新 `data/vocab.json` 和 `data/vocab.js`，其他设备打开网站时即可读取更新后的词条库。
+- 支持从 GitHub 读取最新词条资料到当前浏览器。
 
-## 部署方法
+## 使用 GitHub 保存同步
 
-把以下内容上传到 GitHub repository 根目录：
+1. 在右侧「自定义」面板找到「GitHub 保存同步」。
+2. 填写：
+   - Owner / 用户名
+   - Repository
+   - Branch，一般是 `main`
+   - JSON 路径，默认 `data/vocab.json`
+   - JS 路径，默认 `data/vocab.js`
+   - GitHub Token
+3. 按「保存设置」。
+4. 修改词条、词条组或分类后，按「保存到 GitHub」。
+5. 等 GitHub Pages 重新部署完成后，其他设备打开网站即可看到更新内容。
+
+> Token 只会保存在当前浏览器 LocalStorage。建议使用 Fine-grained token，并只给予当前仓库 Contents: Read and write 权限。
+
+## GitHub Pages 部署
+
+把以下内容上传到 repository 根目录：
 
 ```text
 index.html
@@ -22,10 +37,16 @@ data/
 js/
 ```
 
-然后在 GitHub 仓库进入 **Settings → Pages**，Source 选择 **Deploy from a branch**，Branch 选择 **main / root**。
+然后在 GitHub repository 的 Settings → Pages 中选择：
+
+- Source: Deploy from a branch
+- Branch: main
+- Folder: /root
+
+保存后等待数分钟即可访问网站。
 
 ## 注意
 
-自定义分类、词条组和编辑后的词条会保存到当前浏览器的 LocalStorage，不会上传到服务器。
-
-更新后建议在浏览器按 **Ctrl + F5** 强制刷新，避免载入旧版缓存。
+- 未按「保存到 GitHub」之前，修改只会保存在当前浏览器。
+- 如果 GitHub Pages 更新后仍显示旧内容，请按 Ctrl + F5 强制刷新。
+- 不要把 GitHub Token 写入公开文件，也不要把 Token 分享给其他人。

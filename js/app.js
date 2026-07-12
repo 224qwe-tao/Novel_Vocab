@@ -1,5 +1,5 @@
 (() => {
-  const DATA = window.__VOCAB_DATA__ || { groups: [], mainCategories: [], stats: {} };
+  let DATA = window.__VOCAB_DATA__ || { groups: [], mainCategories: [], stats: {} };
   const groupStoreKey = 'aiNovelVocabSite.groups.v10';
   const categoryStoreKey = 'aiNovelVocabSite.categories.v10';
   const oldGroupStoreKeys = ['aiNovelVocabSite.groups.v3'];
@@ -7,6 +7,8 @@
   const legacyCustomV2 = 'aiNovelVocabSite.custom.v2';
   const legacyCustomV1 = 'aiNovelVocabSite.custom.v1';
   const themeKey = 'aiNovelVocabSite.theme.v1';
+  const githubSettingsKey = 'aiNovelVocabSite.githubSync.v1';
+  let githubDirty = false;
 
   const initialGroups = loadGroups();
   const initialCategories = loadCategories(initialGroups);
@@ -58,7 +60,17 @@
     outputExpandBtn: $('#outputExpandBtn'),
     outputShrinkBtn: $('#outputShrinkBtn'),
     outputFullscreen: $('#outputFullscreen'),
-    promptOutputLarge: $('#promptOutputLarge')
+    promptOutputLarge: $('#promptOutputLarge'),
+    githubOwner: $('#githubOwner'),
+    githubRepo: $('#githubRepo'),
+    githubBranch: $('#githubBranch'),
+    githubJsonPath: $('#githubJsonPath'),
+    githubJsPath: $('#githubJsPath'),
+    githubToken: $('#githubToken'),
+    saveGithubSettingsBtn: $('#saveGithubSettingsBtn'),
+    syncToGithubBtn: $('#syncToGithubBtn'),
+    loadFromGithubBtn: $('#loadFromGithubBtn'),
+    githubStatus: $('#githubStatus')
   };
 
   init();
@@ -68,7 +80,29 @@
     renderTabs();
     renderGroups();
     renderSideTools();
+    loadGithubSettingsToForm();
     bindEvents();
+    updateGithubStatus('未连接 GitHub，同步前请先填写设置。');
+    loadFreshJsonIfNoLocalData();
+  }
+
+
+  async function loadFreshJsonIfNoLocalData() {
+    const hasLocalEdits = localStorage.getItem(groupStoreKey) || localStorage.getItem(categoryStoreKey);
+    if (hasLocalEdits) return;
+    try {
+      const res = await fetch(`data/vocab.json?ts=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const parsed = await res.json();
+      if (!parsed || !Array.isArray(parsed.groups)) return;
+      DATA = parsed;
+      state.groups = normalizeGroups(parsed.groups);
+      state.categories = uniqueClean([...(parsed.mainCategories || []), ...state.groups.map(g => g.mainCategory || '综合词条'), '自定义']);
+      state.activeCategory = state.categories[0] || '综合词条';
+      renderAfterGroupChange();
+    } catch (err) {
+      console.warn('无法读取最新 vocab.json，继续使用内置 vocab.js。', err);
+    }
   }
 
   function bindEvents() {
@@ -112,6 +146,9 @@
     els.categoryMoveUpBtn.addEventListener('click', () => moveSelectedCategory(-1));
     els.categoryMoveDownBtn.addEventListener('click', () => moveSelectedCategory(1));
     els.createGroupBtn.addEventListener('click', createGroupFromSide);
+    els.saveGithubSettingsBtn.addEventListener('click', saveGithubSettingsFromForm);
+    els.syncToGithubBtn.addEventListener('click', syncCurrentDataToGithub);
+    els.loadFromGithubBtn.addEventListener('click', loadDataFromGithub);
     els.themeToggle.addEventListener('click', toggleTheme);
     $$('.side-tabs .tab').forEach(btn => btn.addEventListener('click', () => {
       $$('.side-tabs .tab').forEach(b => b.classList.remove('active'));
@@ -577,12 +614,234 @@
     });
   }
 
-  function saveGroups() {
+  function saveGroups(markDirty = true) {
     localStorage.setItem(groupStoreKey, JSON.stringify(state.groups));
+    if (markDirty) markGithubDirty();
   }
 
-  function saveCategories() {
+  function saveCategories(markDirty = true) {
     localStorage.setItem(categoryStoreKey, JSON.stringify(state.categories));
+    if (markDirty) markGithubDirty();
+  }
+
+
+  function markGithubDirty() {
+    githubDirty = true;
+    updateGithubStatus('有未同步到 GitHub 的修改。');
+  }
+
+  function loadGithubSettingsToForm() {
+    const saved = readGithubSettings();
+    const inferred = inferGithubRepoFromUrl();
+    els.githubOwner.value = saved.owner || inferred.owner || '';
+    els.githubRepo.value = saved.repo || inferred.repo || '';
+    els.githubBranch.value = saved.branch || 'main';
+    els.githubJsonPath.value = saved.jsonPath || 'data/vocab.json';
+    els.githubJsPath.value = saved.jsPath || 'data/vocab.js';
+    els.githubToken.value = saved.token || '';
+  }
+
+  function readGithubSettings() {
+    try {
+      return JSON.parse(localStorage.getItem(githubSettingsKey) || '{}') || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function getGithubSettingsFromForm() {
+    return {
+      owner: els.githubOwner.value.trim(),
+      repo: els.githubRepo.value.trim(),
+      branch: els.githubBranch.value.trim() || 'main',
+      jsonPath: els.githubJsonPath.value.trim() || 'data/vocab.json',
+      jsPath: els.githubJsPath.value.trim() || 'data/vocab.js',
+      token: els.githubToken.value.trim()
+    };
+  }
+
+  function saveGithubSettingsFromForm() {
+    const settings = getGithubSettingsFromForm();
+    if (!settings.owner || !settings.repo) return toast('请填写 GitHub owner 和 repo');
+    localStorage.setItem(githubSettingsKey, JSON.stringify(settings));
+    updateGithubStatus('GitHub 设置已保存到本机浏览器。');
+    toast('已保存 GitHub 设置');
+  }
+
+  function inferGithubRepoFromUrl() {
+    const host = location.hostname || '';
+    const parts = location.pathname.split('/').filter(Boolean);
+    if (host.endsWith('.github.io')) {
+      const owner = host.replace('.github.io', '');
+      const repo = parts[0] || `${owner}.github.io`;
+      return { owner, repo };
+    }
+    return { owner: '', repo: '' };
+  }
+
+  function updateGithubStatus(text) {
+    if (!els.githubStatus) return;
+    const settings = getGithubSettingsFromForm();
+    const target = settings.owner && settings.repo ? `目标：${settings.owner}/${settings.repo} · ${settings.branch}` : '目标：未设置';
+    els.githubStatus.textContent = `${text} ${target}`;
+    els.githubStatus.classList.toggle('dirty', githubDirty);
+  }
+
+  async function syncCurrentDataToGithub() {
+    const settings = getGithubSettingsFromForm();
+    if (!settings.owner || !settings.repo || !settings.token) {
+      return toast('请先填写 owner、repo 和 GitHub Token');
+    }
+    saveGithubSettingsFromForm();
+    const payload = collectPortableData();
+    const jsonText = JSON.stringify(payload, null, 2) + '\n';
+    const jsText = `window.__VOCAB_DATA__ = ${JSON.stringify(payload)};\n`;
+    const messageBase = `Update AI novel vocabulary data ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`;
+    try {
+      setGithubButtonsBusy(true);
+      updateGithubStatus('正在保存到 GitHub...');
+      await putGithubFile(settings, settings.jsonPath, jsonText, messageBase + ' (json)');
+      await putGithubFile(settings, settings.jsPath, jsText, messageBase + ' (js)');
+      DATA = payload;
+      githubDirty = false;
+      updateGithubStatus('已保存到 GitHub。GitHub Pages 可能需要等待几十秒至数分钟才会更新。');
+      toast('已保存到 GitHub');
+    } catch (err) {
+      console.error(err);
+      updateGithubStatus('保存失败：' + (err && err.message ? err.message : '未知错误'));
+      toast('保存到 GitHub 失败');
+    } finally {
+      setGithubButtonsBusy(false);
+    }
+  }
+
+  async function loadDataFromGithub() {
+    const settings = getGithubSettingsFromForm();
+    if (!settings.owner || !settings.repo) return toast('请先填写 owner 和 repo');
+    if (!settings.token && !confirm('未填写 Token 时只能读取公开仓库。继续读取？')) return;
+    saveGithubSettingsFromForm();
+    try {
+      setGithubButtonsBusy(true);
+      updateGithubStatus('正在从 GitHub 读取...');
+      const file = await getGithubFile(settings, settings.jsonPath);
+      const text = base64ToUtf8((file.content || '').replace(/\s/g, ''));
+      const parsed = JSON.parse(text);
+      if (!Array.isArray(parsed.groups)) throw new Error('GitHub 数据格式不正确：缺少 groups');
+      DATA = parsed;
+      state.groups = normalizeGroups(parsed.groups);
+      state.categories = uniqueClean([...(parsed.mainCategories || []), ...state.groups.map(g => g.mainCategory || '综合词条'), '自定义']);
+      state.activeCategory = state.categories[0] || '综合词条';
+      state.expandedAll = false;
+      saveGroups(false);
+      saveCategories(false);
+      githubDirty = false;
+      renderAfterGroupChange();
+      updateGithubStatus('已从 GitHub 读取并更新本机内容。');
+      toast('已从 GitHub 读取');
+    } catch (err) {
+      console.error(err);
+      updateGithubStatus('读取失败：' + (err && err.message ? err.message : '未知错误'));
+      toast('从 GitHub 读取失败');
+    } finally {
+      setGithubButtonsBusy(false);
+    }
+  }
+
+  function collectPortableData() {
+    const groups = ensureUniqueIds(state.groups.map((g, i) => {
+      const out = { ...g };
+      out.id = String(g.id || makeBaseId(g.name || 'group', i));
+      out.name = String(g.name || `词条组 ${i + 1}`).trim();
+      out.mainCategory = String(g.mainCategory || '综合词条').trim();
+      out.tags = uniqueClean(g.tags || []);
+      return out;
+    })).filter(g => g.name);
+    const categories = uniqueClean([...(state.categories || []), ...groups.map(g => g.mainCategory || '综合词条')]).filter(c => c !== '搜索结果');
+    return {
+      version: '1.0.12',
+      title: DATA.title || 'AI小说提示词词条库',
+      description: DATA.description || '静态网页词条收藏与提示词组合工具，可直接部署到 GitHub Pages。',
+      sources: DATA.sources || [],
+      mainCategories: categories,
+      groups,
+      stats: {
+        groupCount: groups.length,
+        tagCount: groups.reduce((sum, g) => sum + g.tags.length, 0),
+        uniqueTagCount: uniqueClean(groups.flatMap(g => g.tags)).length
+      },
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  async function getGithubFile(settings, path) {
+    const url = githubContentsUrl(settings, path) + `?ref=${encodeURIComponent(settings.branch)}`;
+    const res = await fetch(url, { headers: githubHeaders(settings), cache: 'no-store' });
+    if (!res.ok) throw new Error(await githubErrorMessage(res));
+    return res.json();
+  }
+
+  async function putGithubFile(settings, path, text, message) {
+    let sha = undefined;
+    try {
+      const current = await getGithubFile(settings, path);
+      sha = current.sha;
+    } catch (err) {
+      if (!String(err.message || '').includes('404')) throw err;
+    }
+    const body = { message, content: utf8ToBase64(text), branch: settings.branch };
+    if (sha) body.sha = sha;
+    const res = await fetch(githubContentsUrl(settings, path), {
+      method: 'PUT',
+      headers: { ...githubHeaders(settings), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(await githubErrorMessage(res));
+    return res.json();
+  }
+
+  function githubContentsUrl(settings, path) {
+    const safePath = String(path || '').split('/').map(encodeURIComponent).join('/');
+    return `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${safePath}`;
+  }
+
+  function githubHeaders(settings) {
+    const headers = { 'Accept': 'application/vnd.github+json' };
+    if (settings.token) headers.Authorization = `Bearer ${settings.token}`;
+    return headers;
+  }
+
+  async function githubErrorMessage(res) {
+    let text = '';
+    try {
+      const data = await res.json();
+      text = data.message || JSON.stringify(data);
+    } catch {
+      text = await res.text();
+    }
+    return `${res.status} ${res.statusText}${text ? '：' + text : ''}`;
+  }
+
+  function utf8ToBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+    }
+    return btoa(binary);
+  }
+
+  function base64ToUtf8(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function setGithubButtonsBusy(busy) {
+    [els.saveGithubSettingsBtn, els.syncToGithubBtn, els.loadFromGithubBtn].forEach(btn => {
+      if (btn) btn.disabled = busy;
+    });
   }
 
   function loadLegacyCustom() {

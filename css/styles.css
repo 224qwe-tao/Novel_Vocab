@@ -554,3 +554,49 @@ body.modal-open {
   .output-fullscreen-panel { width: calc(100vw - 28px); height: calc(100vh - 28px); padding: 12px; }
   #promptOutput { height: 180px; min-height: 180px; }
 }
+
+/* v12 GitHub sync */
+.github-sync-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--surface-2);
+}
+.github-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.github-grid label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.github-grid input {
+  width: 100%;
+}
+.github-status {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: var(--surface);
+  line-height: 1.6;
+  word-break: break-word;
+}
+.github-status.dirty {
+  color: var(--warning);
+  border-color: rgba(251, 140, 0, .35);
+  background: rgba(251, 140, 0, .08);
+}
+button:disabled {
+  cursor: wait;
+  opacity: .62;
+  transform: none !important;
+  box-shadow: none !important;
+}
+@media (max-width: 680px) {
+  .github-grid { grid-template-columns: 1fr; }
+}

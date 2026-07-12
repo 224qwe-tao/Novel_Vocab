@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI小说提示词词条库</title>
   <meta name="description" content="AI小说提示词词条收藏、搜索和自定义管理工具。" />
-  <link rel="stylesheet" href="css/styles.css?v=13" />
+  <link rel="stylesheet" href="css/styles.css?v=14" />
 </head>
 <body>
   <div class="app-shell">
@@ -118,6 +118,40 @@
               <button id="createGroupBtn" class="primary-btn" type="button">新增词条组</button>
               <p class="side-note">新增词条组后会自动打开编辑窗口，可直接输入或修改全部词条。</p>
             </div>
+
+            <hr />
+
+            <div class="edit-block github-sync-block">
+              <h3>GitHub 保存同步</h3>
+              <p class="side-note">把目前所有分类、词条组和词条内容保存到 GitHub 仓库。保存成功后，其他设备打开 GitHub Pages 网站也能看到更新后的内容。</p>
+              <div class="github-grid">
+                <label>Owner / 用户名
+                  <input id="githubOwner" placeholder="例如：yourname" autocomplete="off" />
+                </label>
+                <label>Repository
+                  <input id="githubRepo" placeholder="例如：ai-novel-vocab" autocomplete="off" />
+                </label>
+                <label>Branch
+                  <input id="githubBranch" value="main" placeholder="main" autocomplete="off" />
+                </label>
+                <label>JSON 路径
+                  <input id="githubJsonPath" value="data/vocab.json" placeholder="data/vocab.json" autocomplete="off" />
+                </label>
+                <label>JS 路径
+                  <input id="githubJsPath" value="data/vocab.js" placeholder="data/vocab.js" autocomplete="off" />
+                </label>
+                <label>GitHub Token
+                  <input id="githubToken" type="password" placeholder="Fine-grained token，需 Contents 读写权限" autocomplete="off" />
+                </label>
+              </div>
+              <div class="button-row left">
+                <button id="saveGithubSettingsBtn" class="ghost-btn" type="button">保存设置</button>
+                <button id="syncToGithubBtn" class="primary-btn" type="button">保存到 GitHub</button>
+                <button id="loadFromGithubBtn" class="accent-btn" type="button">从 GitHub 读取</button>
+              </div>
+              <div id="githubStatus" class="github-status">未连接 GitHub。</div>
+              <p class="side-note">Token 只会保存在当前浏览器。建议使用只允许当前仓库 Contents: Read and write 的 Fine-grained token。</p>
+            </div>
           </div>
           <div id="customList" class="custom-list"></div>
         </section>
@@ -133,8 +167,8 @@
             </div>
             <div class="about-panel merged-about">
               <h3>关于</h3>
-              <p>这是一个面向 AI 小说写作的静态词条收藏网站。点击左侧词条后，会直接加入上方选择区与右侧输出框。</p>
-              <p>自定义词条组会保存到当前浏览器 LocalStorage，不会上传到服务器。上传到 GitHub Pages 后仍可正常使用。</p>
+              <p>这是一个面向 AI 小说写作的静态词条收藏网站。点击左侧词条后，会直接加入上方输出框。</p>
+              <p>词条修改会先保存到当前浏览器 LocalStorage；设置 GitHub 同步后，可手动写入仓库，使其他设备打开网站时也能看到更新后的词条库。</p>
             </div>
           </div>
         </section>
@@ -176,7 +210,7 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/vocab.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
+  <script src="data/vocab.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
 </body>
 </html>
