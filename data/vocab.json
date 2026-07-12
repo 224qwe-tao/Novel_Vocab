@@ -34,23 +34,20 @@
   ],
   "mainCategories": [
     "综合词条",
-    "世界观",
-    "人物描写",
     "身体部位",
     "动作状态",
+    "人物描写",
     "感官氛围",
     "服饰道具",
-    "SM／拘束"
+    "SM／拘束",
+    "自定义",
+    "世界观"
   ],
   "groups": [
     {
       "id": "src1-声音和拟声词",
       "name": "声音和拟声词",
       "mainCategory": "感官氛围",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "十部分",
         "仅描写人体",
@@ -68,10 +65,6 @@
       "id": "src1-皮肤和通用",
       "name": "皮肤和通用",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "此段最为重要",
         "可用于任何涉及皮肤或结缔组织的部位",
@@ -87,10 +80,6 @@
       "id": "src1-程度",
       "name": "程度",
       "mainCategory": "人物描写",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "超级",
         "无比",
@@ -113,10 +102,6 @@
       "id": "src1-整体气质",
       "name": "整体气质",
       "mainCategory": "人物描写",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "君临天下",
         "艳冠群芳",
@@ -240,13 +225,9 @@
       ]
     },
     {
-      "id": "src1-皮肤和通用",
+      "id": "src1-皮肤和通用-2",
       "name": "皮肤和通用",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "欺霜赛雪",
         "晶莹剔透",
@@ -338,10 +319,6 @@
       "id": "src1-头发",
       "name": "头发",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "洁白",
         "银辉",
@@ -406,10 +383,6 @@
       "id": "src1-五官和脸颊",
       "name": "五官和脸颊",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "美目流盼",
         "眼波盈盈",
@@ -501,10 +474,6 @@
       "id": "src1-胸部和臀部",
       "name": "胸部和臀部",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "玉碗倒扣",
         "跌宕起伏",
@@ -597,10 +566,6 @@
       "id": "src1-腰部",
       "name": "腰部",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "不盈一握",
         "堪堪一握",
@@ -635,10 +600,6 @@
       "id": "src1-手臂和腿部",
       "name": "手臂和腿部",
       "mainCategory": "身体部位",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "凌波微步",
         "罗袜生尘",
@@ -696,10 +657,6 @@
       "id": "src1-性器和液体",
       "name": "性器和液体",
       "mainCategory": "感官氛围",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "严丝合缝",
         "层层叠叠",
@@ -802,13 +759,9 @@
       ]
     },
     {
-      "id": "src1-声音和拟声词",
+      "id": "src1-声音和拟声词-2",
       "name": "声音和拟声词",
       "mainCategory": "感官氛围",
-      "sourceId": "src1",
-      "sourceTitle": "#2 美少女R18描写常用词汇集锦",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=14986566",
-      "r18": true,
       "tags": [
         "绝/惨/浪/娇叫",
         "悲鸣/歌",
@@ -886,10 +839,6 @@
       "id": "src2-声音和拟声词",
       "name": "声音和拟声词",
       "mainCategory": "感官氛围",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "十部分",
         "仅描写人体",
@@ -907,10 +856,6 @@
       "id": "src2-皮肤和通用",
       "name": "皮肤和通用",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "此段最为重要",
         "可用于任何涉及皮肤或结缔组织的部位",
@@ -926,10 +871,6 @@
       "id": "src2-程度",
       "name": "程度",
       "mainCategory": "人物描写",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "超级",
         "无比",
@@ -952,10 +893,6 @@
       "id": "src2-整体气质",
       "name": "整体气质",
       "mainCategory": "人物描写",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "君临天下",
         "艳冠群芳",
@@ -1090,13 +1027,9 @@
       ]
     },
     {
-      "id": "src2-皮肤和通用",
+      "id": "src2-皮肤和通用-2",
       "name": "皮肤和通用",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "欺霜赛雪",
         "晶莹剔透",
@@ -1199,10 +1132,6 @@
       "id": "src2-头发",
       "name": "头发",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "洁白",
         "银辉",
@@ -1268,10 +1197,6 @@
       "id": "src2-五官和脸颊",
       "name": "五官和脸颊",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "美目流盼",
         "眼波盈盈",
@@ -1364,10 +1289,6 @@
       "id": "src2-胸部和臀部",
       "name": "胸部和臀部",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "无论胸还是屁股",
         "都要晃",
@@ -1489,10 +1410,6 @@
       "id": "src2-腰部",
       "name": "腰部",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "不盈一握",
         "堪堪一握",
@@ -1527,10 +1444,6 @@
       "id": "src2-手臂和腿部",
       "name": "手臂和腿部",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "凌波微步",
         "罗袜生尘",
@@ -1598,10 +1511,6 @@
       "id": "src2-性器和液体",
       "name": "性器和液体",
       "mainCategory": "感官氛围",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "严丝合缝",
         "层层叠叠",
@@ -1714,10 +1623,6 @@
       "id": "src2-男性性器",
       "name": "男性性器",
       "mainCategory": "身体部位",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "肿胀",
         "挺立",
@@ -1746,13 +1651,9 @@
       ]
     },
     {
-      "id": "src2-声音和拟声词",
+      "id": "src2-声音和拟声词-2",
       "name": "声音和拟声词",
       "mainCategory": "感官氛围",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "绝/惨/浪/娇叫",
         "悲鸣/歌",
@@ -1833,10 +1734,6 @@
       "id": "src2-动作",
       "name": "动作",
       "mainCategory": "动作状态",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "套弄",
         "活塞运动",
@@ -1866,10 +1763,6 @@
       "id": "src2-服饰相关",
       "name": "服饰相关",
       "mainCategory": "服饰道具",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "轻纱",
         "圣洁",
@@ -1891,10 +1784,6 @@
       "id": "src2-感受",
       "name": "感受",
       "mainCategory": "感官氛围",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "电流感",
         "痉挛",
@@ -1906,12 +1795,9 @@
       "id": "src2-触手",
       "name": "触手",
       "mainCategory": "综合词条",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
-        "吸盘和颗粒",
+        "吸盘",
+        "颗粒",
         "口器",
         "滑腻且柔软",
         "粘腻",
@@ -1955,10 +1841,6 @@
       "id": "src2-男方的内容",
       "name": "男方的内容",
       "mainCategory": "综合词条",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "碾过",
         "扩张",
@@ -1974,10 +1856,6 @@
       "id": "src2-撸的写法",
       "name": "撸的写法",
       "mainCategory": "综合词条",
-      "sourceId": "src2",
-      "sourceTitle": "#3 R18词汇大全",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=20487870",
-      "r18": true,
       "tags": [
         "手的动作+手指的动作",
         "要有压力",
@@ -2007,10 +1885,6 @@
       "id": "src3-形容女性身体部位-胸部",
       "name": "形容女性身体部位 / 胸部",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "巨硕爆乳",
         "L杯爆乳",
@@ -2079,10 +1953,6 @@
       "id": "src3-形容女性身体部位-臀部-胯部",
       "name": "形容女性身体部位 / 臀部/胯部",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "安产巨尻",
         "宽厚肉肥的安产巨尻",
@@ -2147,17 +2017,14 @@
         "硕大而又沉甸的屁股",
         "肥腻弹软的肥臀",
         "饱满而又紧实的翘臀",
-        "浑圆肥硕的翘臀"
+        "浑圆肥硕的翘臀",
+        "aaa"
       ]
     },
     {
       "id": "src3-形容女性身体部位-腿部",
       "name": "形容女性身体部位 / 腿部",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "修长美腿",
         "油肥大腿",
@@ -2201,10 +2068,6 @@
       "id": "src3-形容女性身体部位-阴部",
       "name": "形容女性身体部位 / 阴部",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "锥形牝穴名器",
         "肥腻雌穴",
@@ -2249,10 +2112,6 @@
       "id": "src3-形容女性身体部位-其他",
       "name": "形容女性身体部位 / 其他",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "丰腴熟躯",
         "肥美肉躯",
@@ -2345,10 +2204,6 @@
       "id": "src3-形容男性性器官-主要指扶她巨屌-整体",
       "name": "形容男性性器官（主要指扶她巨屌） / 整体",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "狰狞巨根",
         "初中生巨根",
@@ -2440,10 +2295,6 @@
       "id": "src3-形容男性性器官-主要指扶她巨屌-龟头",
       "name": "形容男性性器官（主要指扶她巨屌） / 龟头",
       "mainCategory": "身体部位",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "硕大龟头",
         "狰狞龟头",
@@ -2491,10 +2342,6 @@
       "id": "src3-形容男性性器官-主要指扶她巨屌-茎身",
       "name": "形容男性性器官（主要指扶她巨屌） / 茎身",
       "mainCategory": "身体部位",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "粗壮的茎身",
         "狰狞茎身",
@@ -2530,10 +2377,6 @@
       "id": "src3-形容男性性器官-主要指扶她巨屌-阴囊-蛋蛋",
       "name": "形容男性性器官（主要指扶她巨屌） / 阴囊/蛋蛋",
       "mainCategory": "身体部位",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "巨蛋",
         "沉甸甸的巨蛋",
@@ -2564,10 +2407,6 @@
       "id": "src3-形容性行为或过程",
       "name": "形容性行为或过程",
       "mainCategory": "动作状态",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "爆肏",
         "打桩",
@@ -2677,10 +2516,6 @@
       "id": "src3-形容性欲或性状态",
       "name": "形容性欲或性状态",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "淫靡",
         "放荡",
@@ -2786,10 +2621,6 @@
       "id": "src3-形容气味或液体",
       "name": "形容气味或液体",
       "mainCategory": "感官氛围",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "淫媚雌汁",
         "熟媚淫液",
@@ -2860,10 +2691,6 @@
       "id": "src3-其他油腻词语",
       "name": "其他油腻词语",
       "mainCategory": "人物描写",
-      "sourceId": "src3",
-      "sourceTitle": "#1 油腻词库",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=23761269",
-      "r18": true,
       "tags": [
         "黏腻",
         "油润",
@@ -2922,10 +2749,6 @@
       "id": "src4-通用类-形容词-外貌与体型特征",
       "name": "通用类 / 形容词 / 外貌与体型特征",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "丰满",
         "丰腴",
@@ -2961,10 +2784,6 @@
       "id": "src4-通用类-形容词-肤色与肌肤质感",
       "name": "通用类 / 形容词 / 肤色与肌肤质感",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "红肿",
         "娇媚",
@@ -2990,10 +2809,6 @@
       "id": "src4-通用类-形容词-气质与神态",
       "name": "通用类 / 形容词 / 气质与神态",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "曼妙",
         "成熟",
@@ -3028,10 +2843,6 @@
       "id": "src4-通用类-形容词-情感与状态",
       "name": "通用类 / 形容词 / 情感与状态",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "凄楚",
         "幽怨",
@@ -3073,10 +2884,6 @@
       "id": "src4-通用类-形容词-性感与诱惑",
       "name": "通用类 / 形容词 / 性感与诱惑",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "淫靡",
         "性感",
@@ -3112,10 +2919,6 @@
       "id": "src4-通用类-形容词-视觉与色彩",
       "name": "通用类 / 形容词 / 视觉与色彩",
       "mainCategory": "感官氛围",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "美丽",
         "漂亮",
@@ -3143,10 +2946,6 @@
       "id": "src4-通用类-形容词-听觉与触觉",
       "name": "通用类 / 形容词 / 听觉与触觉",
       "mainCategory": "感官氛围",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "甘甜",
         "鲜美",
@@ -3171,10 +2970,6 @@
       "id": "src4-通用类-形容词-动作与动态",
       "name": "通用类 / 形容词 / 动作与动态",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "高亢",
         "亢奋",
@@ -3203,10 +2998,6 @@
       "id": "src4-通用类-形容词-负面或贬义",
       "name": "通用类 / 形容词 / 负面或贬义",
       "mainCategory": "综合词条",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "粗暴",
         "肮脏",
@@ -3228,10 +3019,6 @@
       "id": "src4-通用类-形容词-其他",
       "name": "通用类 / 形容词 / 其他",
       "mainCategory": "综合词条",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "完美",
         "精致",
@@ -3257,10 +3044,6 @@
       "id": "src4-通用类-名词-头部与面部",
       "name": "通用类 / 名词 / 头部与面部",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "美女",
         "秀首",
@@ -3303,10 +3086,6 @@
       "id": "src4-通用类-名词-眼睛与眉毛",
       "name": "通用类 / 名词 / 眼睛与眉毛",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "美目",
         "媚眼",
@@ -3324,10 +3103,6 @@
       "id": "src4-通用类-名词-鼻子与嘴唇",
       "name": "通用类 / 名词 / 鼻子与嘴唇",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "鼻梁",
         "瑶鼻",
@@ -3347,10 +3122,6 @@
       "id": "src4-通用类-名词-牙齿与口腔",
       "name": "通用类 / 名词 / 牙齿与口腔",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "银牙",
         "贝齿",
@@ -3366,10 +3137,6 @@
       "id": "src4-通用类-名词-颈部与肩膀",
       "name": "通用类 / 名词 / 颈部与肩膀",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "玉颈",
         "鹅颈",
@@ -3385,10 +3152,6 @@
       "id": "src4-通用类-名词-胸部与乳房",
       "name": "通用类 / 名词 / 胸部与乳房",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "胸部",
         "胸脯",
@@ -3424,10 +3187,6 @@
       "id": "src4-通用类-名词-腰腹与背部",
       "name": "通用类 / 名词 / 腰腹与背部",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "蛮腰",
         "蜂腰",
@@ -3448,10 +3207,6 @@
       "id": "src4-通用类-名词-臀部与私密部位",
       "name": "通用类 / 名词 / 臀部与私密部位",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "屁股",
         "屁穴",
@@ -3511,10 +3266,6 @@
       "id": "src4-通用类-名词-生殖器与性相关",
       "name": "通用类 / 名词 / 生殖器与性相关",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "肉棒",
         "阴茎",
@@ -3554,10 +3305,6 @@
       "id": "src4-通用类-名词-四肢与手脚",
       "name": "通用类 / 名词 / 四肢与手脚",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "玉腿",
         "美腿",
@@ -3606,10 +3353,6 @@
       "id": "src4-通用类-名词-衣物与饰品",
       "name": "通用类 / 名词 / 衣物与饰品",
       "mainCategory": "服饰道具",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "内衣",
         "内裤",
@@ -3646,10 +3389,6 @@
       "id": "src4-通用类-名词-肌肤与触感",
       "name": "通用类 / 名词 / 肌肤与触感",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "肌肤",
         "香汗",
@@ -3672,10 +3411,6 @@
       "id": "src4-通用类-名词-头发与发型",
       "name": "通用类 / 名词 / 头发与发型",
       "mainCategory": "身体部位",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "秀发",
         "鬓发",
@@ -3688,10 +3423,6 @@
       "id": "src4-通用类-名词-气质与状态",
       "name": "通用类 / 名词 / 气质与状态",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "尤物",
         "娇躯",
@@ -3733,10 +3464,6 @@
       "id": "src4-通用类-名词-其他",
       "name": "通用类 / 名词 / 其他",
       "mainCategory": "综合词条",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "脂肪",
         "水洼",
@@ -3768,10 +3495,6 @@
       "id": "src4-通用类-动词-性行为与性反应",
       "name": "通用类 / 动词 / 性行为与性反应",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "舔舐",
         "舔弄",
@@ -3822,10 +3545,6 @@
       "id": "src4-通用类-动词-暴力-强迫与羞辱",
       "name": "通用类 / 动词 / 暴力、强迫与羞辱",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "玷污",
         "凌辱",
@@ -3849,10 +3568,6 @@
       "id": "src4-通用类-动词-挑逗与诱惑",
       "name": "通用类 / 动词 / 挑逗与诱惑",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "媚笑",
         "淫笑",
@@ -3871,10 +3586,6 @@
       "id": "src4-通用类-动词-身体动作与触感",
       "name": "通用类 / 动词 / 身体动作与触感",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "揉搓",
         "颤动",
@@ -3907,10 +3618,6 @@
       "id": "src4-通用类-动词-情绪与状态",
       "name": "通用类 / 动词 / 情绪与状态",
       "mainCategory": "人物描写",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "忍耐",
         "克制",
@@ -3932,10 +3639,6 @@
       "id": "src4-通用类-动词-液体与流动",
       "name": "通用类 / 动词 / 液体与流动",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "流淌",
         "滴落",
@@ -3952,10 +3655,6 @@
       "id": "src4-通用类-动词-其他动作",
       "name": "通用类 / 动词 / 其他动作",
       "mainCategory": "动作状态",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "缠绕",
         "流转",
@@ -3973,10 +3672,6 @@
       "id": "src4-SM类-形容词-形状类",
       "name": "SM类 / 形容词 / 形状类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "W形",
         "Y形",
@@ -3990,10 +3685,6 @@
       "id": "src4-SM类-形容词-状态类",
       "name": "SM类 / 形容词 / 状态类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "紧密",
         "严密",
@@ -4016,10 +3707,6 @@
       "id": "src4-SM类-形容词-质地或触感类",
       "name": "SM类 / 形容词 / 质地或触感类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "精妙",
         "精密",
@@ -4039,10 +3726,6 @@
       "id": "src4-SM类-形容词-行为或能力类",
       "name": "SM类 / 形容词 / 行为或能力类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "熟练",
         "沉默",
@@ -4055,10 +3738,6 @@
       "id": "src4-SM类-形容词-负面或痛苦状态类",
       "name": "SM类 / 形容词 / 负面或痛苦状态类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "充血",
         "红肿",
@@ -4080,10 +3759,6 @@
       "id": "src4-SM类-名词-情趣用品-玩具",
       "name": "SM类 / 名词 / 情趣用品/玩具",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "情趣玩具",
         "情趣道具",
@@ -4134,10 +3809,6 @@
       "id": "src4-SM类-名词-束缚-拘束类",
       "name": "SM类 / 名词 / 束缚/拘束类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "绳索",
         "藤蔓",
@@ -4257,10 +3928,6 @@
       "id": "src4-SM类-名词-角色-身份类",
       "name": "SM类 / 名词 / 角色/身份类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "抖M",
         "受虐狂",
@@ -4297,10 +3964,6 @@
       "id": "src4-SM类-名词-刑具-惩罚类",
       "name": "SM类 / 名词 / 刑具/惩罚类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "三角木马",
         "十字架",
@@ -4325,10 +3988,6 @@
       "id": "src4-SM类-名词-声音-感官类",
       "name": "SM类 / 名词 / 声音/感官类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "咔嚓声",
         "嘎吱声",
@@ -4346,10 +4005,6 @@
       "id": "src4-SM类-名词-其他相关概念",
       "name": "SM类 / 名词 / 其他相关概念",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "放置PLAY",
         "韧性",
@@ -4378,10 +4033,6 @@
       "id": "src4-SM类-动词-束缚-捆绑类",
       "name": "SM类 / 动词 / 束缚/捆绑类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "紧缚",
         "捆绑",
@@ -4428,10 +4079,6 @@
       "id": "src4-SM类-动词-抓捕-控制类",
       "name": "SM类 / 动词 / 抓捕/控制类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "绑架",
         "诱捕",
@@ -4451,10 +4098,6 @@
       "id": "src4-SM类-动词-挣脱-反抗类",
       "name": "SM类 / 动词 / 挣脱/反抗类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "脱缚",
         "解缚",
@@ -4470,10 +4113,6 @@
       "id": "src4-SM类-动词-调教-惩罚类",
       "name": "SM类 / 动词 / 调教/惩罚类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "调教",
         "惩罚",
@@ -4496,10 +4135,6 @@
       "id": "src4-SM类-动词-动作-姿态类",
       "name": "SM类 / 动词 / 动作/姿态类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "反弓",
         "反折",
@@ -4533,10 +4168,6 @@
       "id": "src4-SM类-动词-魔法-结果类",
       "name": "SM类 / 动词 / 魔法/结果类",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "附魔",
         "禁魔",
@@ -4553,10 +4184,6 @@
       "id": "src4-SM类-动词-Litter-黑丝逮捕令",
       "name": "SM类 / 动词 / Litter《黑丝逮捕令》",
       "mainCategory": "SM／拘束",
-      "sourceId": "src4",
-      "sourceTitle": "27968391-千粉福利——R18小说词典（捆绑／拘束类）",
-      "sourceUrl": "https://www.pixiv.net/novel/show.php?id=27968391",
-      "r18": true,
       "tags": [
         "注：以上参考文献只是选取了部分",
         "且不分先后",
@@ -4568,7 +4195,6 @@
       "id": "worldview-世界类型模板",
       "name": "世界类型模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "中世纪魔法王国：由王国、教会、骑士团与魔法学院共同维持秩序的剑与魔法世界",
         "蒸汽朋克都市：煤烟、齿轮、飞艇、机械义肢与地下革命并存的工业时代",
@@ -4591,7 +4217,6 @@
       "id": "worldview-社会结构模板",
       "name": "社会结构模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "阶级森严的贵族社会：血统、爵位和家族名誉决定大多数人的命运",
         "公会制度社会：冒险者、商人、工匠和情报组织以公会形式管理资源与任务",
@@ -4611,7 +4236,6 @@
       "id": "worldview-力量体系模板",
       "name": "力量体系模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "魔法来自契约：施法者必须与精灵、恶魔、神明或概念签订契约才能使用力量",
         "魔法来自代价：每次施法都会消耗记忆、寿命、情感或身体的一部分",
@@ -4631,7 +4255,6 @@
       "id": "worldview-地点与舞台模板",
       "name": "地点与舞台模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "边境要塞：位于文明与荒野交界，驻军、商队、难民和怪物威胁不断汇聚",
         "魔法学院：表面是培养人才的学校，内部隐藏派系斗争、禁书区和秘密实验",
@@ -4651,7 +4274,6 @@
       "id": "worldview-组织势力模板",
       "name": "组织势力模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "王室与贵族议会：表面效忠同一王冠，暗中为继承权和领地利益互相倾轧",
         "魔法学院派系：不同学派围绕资源、理论和禁术研究形成竞争",
@@ -4671,7 +4293,6 @@
       "id": "worldview-主要冲突模板",
       "name": "主要冲突模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "旧秩序与新技术的冲突：新发明正在动摇贵族、教会或传统职业的权力",
         "资源枯竭危机：魔力、粮食、水源、矿物或能源即将耗尽，各方开始争夺",
@@ -4691,7 +4312,6 @@
       "id": "worldview-世界规则模板",
       "name": "世界规则模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "所有魔法都必须遵守等价交换，越强大的效果需要越明确的代价",
         "任何人说出真名都会被世界记录，并可能被诅咒、追踪或召唤",
@@ -4711,7 +4331,6 @@
       "id": "worldview-故事开局模板",
       "name": "故事开局模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "主角在一次普通事件中接触到里世界，从此无法回到原本的日常",
         "主角继承一座破败领地，必须在资源不足和外敌威胁下重建秩序",
@@ -4731,7 +4350,6 @@
       "id": "worldview-世界观一句话模板",
       "name": "世界观一句话模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "这是一个魔法已经工业化的世界，奇迹被装进机器，神秘被写进说明书",
         "这是一个旧神死去后的世界，人类在神明遗骸上建立城市与信仰",
@@ -4751,7 +4369,6 @@
       "id": "worldview-氛围与风格模板",
       "name": "氛围与风格模板",
       "mainCategory": "世界观",
-      "r18": false,
       "tags": [
         "温柔治愈系世界观：冲突不依赖毁灭，而来自成长、选择、误解与和解",
         "黑暗压抑系世界观：资源稀缺、真相残酷，角色必须在坏选择中寻找较好的结局",
@@ -4766,11 +4383,42 @@
         "怪诞童话系世界观：美丽表象下隐藏残酷规则，象征、诅咒和寓言感强烈",
         "硬科幻探索系世界观：以技术限制、生态系统、航行距离和文明接触为主要约束"
       ]
+    },
+    {
+      "id": "custom-我的词条-94",
+      "name": "我的词条",
+      "mainCategory": "自定义",
+      "tags": []
+    },
+    {
+      "id": "user-1782905145157-我的词条-95",
+      "name": "我的词条",
+      "mainCategory": "综合词条",
+      "tags": []
+    },
+    {
+      "id": "user-1782905150669-a111-96",
+      "name": "A111",
+      "mainCategory": "综合词条",
+      "tags": []
+    },
+    {
+      "id": "user-1782905666324-我的词条-96",
+      "name": "我的词条",
+      "mainCategory": "SM／拘束",
+      "tags": []
+    },
+    {
+      "id": "user-1782905669124-我的词条-97",
+      "name": "我的词条",
+      "mainCategory": "SM／拘束",
+      "tags": []
     }
   ],
   "stats": {
-    "groupCount": 104,
-    "tagCount": 3610,
-    "uniqueTagCount": 2673
-  }
+    "groupCount": 109,
+    "tagCount": 3612,
+    "uniqueTagCount": 2674
+  },
+  "updatedAt": "2026-07-12T09:53:52.935Z"
 }
